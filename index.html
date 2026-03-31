@@ -127,11 +127,11 @@ function idealGordura(sexo,idade){
 }
 
 // Peso ideal (Devine)
-function pesoIdeal(altura, sexo){
- let alturaCm = altura*100;
- let base = sexo==='M' ? 50 : 45.5;
- let extra = ((alturaCm - 152.4)/2.54) * 2.3;
- return base + (extra>0?extra:0);
+// Peso ideal baseado no percentual de gordura (JP7)
+function pesoIdeal(peso, gorduraAtual, gorduraIdealMedia){
+ let massaMagra = peso * (1 - gorduraAtual/100);
+ let pesoIdealCalc = massaMagra / (1 - gorduraIdealMedia/100);
+ return pesoIdealCalc;
 }
 
 function calcular(){
@@ -147,7 +147,10 @@ function calcular(){
  // IMC
  let imc=peso/(altura*altura);
  let imcClass=classIMC(imc);
- let pesoIdealCalc = pesoIdeal(altura, sexo);
+ // média da faixa ideal
+let faixa = ideal.split('–');
+let gorduraIdealMedia = (parseFloat(faixa[0]) + parseFloat(faixa[1]))/2;
+let pesoIdealCalc = pesoIdeal(peso, gordura, gorduraIdealMedia);
 
  // JP7 (18–61 anos)
  let soma=v('triceps')+v('subescapular')+v('supra')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
@@ -188,7 +191,7 @@ if(adequacao < 90){
 // Saída
  let res=`IMC: ${imc.toFixed(2)} (${imcClass})
 `+
- `Peso ideal estimado: ${pesoIdealCalc.toFixed(1)} kg (referência saudável)
+ `Peso ideal estimado (baseado na gordura ideal): ${pesoIdealCalc.toFixed(2)} kg
 `+
  `Peso ideal estimado: ${pesoIdealCalc.toFixed(2)} kg\n`+
  `Gordura (JP7): ${gordura.toFixed(2)}% (${classG})\n`+
@@ -217,13 +220,35 @@ document.getElementById('resultado').innerText=res;
 
  // Gráfico colunas com cores
  new Chart(document.getElementById('graficoColuna'),{
+  options:{
+    plugins:{
+      tooltip:{enabled:true},
+      legend:{display:true}
+    }
+  },
+  plugins:[{
+    id:'labelsTopo',
+    afterDatasetsDraw(chart){
+      const {ctx} = chart;
+      chart.data.datasets.forEach((dataset,i)=>{
+        const meta = chart.getDatasetMeta(i);
+        meta.data.forEach((bar,index)=>{
+          const value = dataset.data[index];
+          ctx.fillStyle = '#000';
+          ctx.font = '12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(value.toFixed(1), bar.x, bar.y - 5);
+        });
+      });
+    }
+  }],
   type:'bar',
   data:{
-    labels:['Gordura','Muscular','Ósseo','Residual'],
+    labels:['Total','Gordura','Muscular','Ósseo','Residual'],
     datasets:[{
       label:'Composição (kg)',
-      data:[pesoGordura,pesoMuscular,pesoOsseo,pesoResidual],
-      backgroundColor:['#ef4444','#22c55e','#3b82f6','#f59e0b']
+      data:[peso,pesoGordura,pesoMuscular,pesoOsseo,pesoResidual],
+      backgroundColor:['#a78bfa','#ef4444','#22c55e','#3b82f6','#f59e0b']
     }]
   }
  });
