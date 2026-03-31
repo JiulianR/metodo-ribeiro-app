@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método Ribeiro PRO ULTRA</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
+.container{max-width:1200px;margin:auto;background:#111827;padding:20px;border-radius:12px}
+h1{color:#a78bfa}
+h2{margin-top:20px;color:#c4b5fd}
+input, select, textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:none}
+button{margin-top:10px;background:#7c3aed;color:#fff;padding:10px;border:none;border-radius:8px;cursor:pointer}
+.result{margin-top:15px;background:#1f2937;padding:10px;border-radius:8px}
+canvas{background:#fff;border-radius:8px;margin-top:15px}
+img.preview{max-width:100px;margin:5px;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div style="display:flex;align-items:center;gap:10px;">
+<img src="logo.png" style="height:60px">
+<h1>Método Ribeiro PRO ULTRA</h1>
+</div>
+
+<h2>Cadastro</h2>
+<input id="nome" placeholder="Nome completo">
+<input id="nascimento" type="date">
+<input id="telefone" placeholder="Telefone / WhatsApp">
+<input id="cidade" placeholder="Cidade">
+<input id="estado" placeholder="Estado">
+<select id="sexo">
+<option value="M">Masculino</option>
+<option value="F">Feminino</option>
+</select>
+
+<h2>Anamnese</h2>
+<select id="objetivo"><option>Emagrecimento</option><option>Hipertrofia</option></select>
+<select id="dor"><option>Sem dor</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
+<textarea id="lesoes" placeholder="Histórico de lesões"></textarea>
+<textarea id="medicamentos" placeholder="Medicamentos"></textarea>
+<input id="freq" placeholder="Frequência semanal">
+<input id="tempo" placeholder="Tempo de prática">
+
+<h2>Avaliação Postural (Fotos)</h2>
+<input type="file" accept="image/*" onchange="preview(this,'f1')">
+<img id="f1" class="preview">
+<input type="file" accept="image/*" onchange="preview(this,'f2')">
+<img id="f2" class="preview">
+<input type="file" accept="image/*" onchange="preview(this,'f3')">
+<img id="f3" class="preview">
+
+<h2>Medidas</h2>
+<input id="peso" placeholder="Peso">
+<input id="altura" placeholder="Altura">
+<input id="cintura" placeholder="Cintura">
+<input id="quadril" placeholder="Quadril">
+
+<h2>Dobras (JP7)</h2>
+<input id="triceps" placeholder="Triceps"><input id="subescapular" placeholder="Subescapular"><input id="suprailiaca" placeholder="Suprailiaca"><input id="peitoral" placeholder="Peitoral"><input id="axilar" placeholder="Axilar Média"><input id="abdomen" placeholder="Abdomen"><input id="coxa"placeholder="Coxa">
+
+<button onclick="calcular()">Calcular</button>
+<button onclick="window.print()">Imprimir / PDF</button>
+
+<div id="resultado" class="result"></div>
+<canvas id="grafico"></canvas>
+</div>
+
+<script>
+let hist=JSON.parse(localStorage.getItem('hist')||'[]');
+function v(id){return parseFloat(document.getElementById(id).value)||0}
+
+function preview(input,id){
+let reader=new FileReader();
+reader.onload=e=>document.getElementById(id).src=e.target.result;
+reader.readAsDataURL(input.files[0]);
+}
+
+function calcular(){
+let peso=v('peso'),altura=v('altura');
+let imc=peso/(altura*altura);
+let rcq=v('cintura')/v('quadril');
+
+let soma=v('triceps')+v('subescapular')+v('suprailiaca')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
+let dens=1.112-(0.00043499*soma)+(0.00000055*soma*soma);
+let gordura=(495/dens)-450;
+
+hist.push(gordura);
+localStorage.setItem('hist',JSON.stringify(hist));
+
+let res=`IMC: ${imc.toFixed(2)}\nRCQ: ${rcq.toFixed(2)}\n% Gordura: ${gordura.toFixed(2)}`;
+document.getElementById('resultado').innerText=res;
+
+new Chart(document.getElementById('grafico'),{
+ type:'line',
+ data:{labels:hist.map((_,i)=>i+1),datasets:[{label:'% Gordura',data:hist}]}
+});
+}
+</script>
+</body>
+</html>
