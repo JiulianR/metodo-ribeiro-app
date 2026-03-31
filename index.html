@@ -113,8 +113,7 @@ function classIMC(imc){
  return 'Obesidade III';
 }
 
-function classGordura(p,sexo,idade){
- // faixas simples por sexo
+function classGordura(p,sexo){
  if(sexo==='M'){
   if(p<8) return 'Excelente'; if(p<15) return 'Bom'; if(p<20) return 'Médio'; if(p<25) return 'Regular'; return 'Ruim';
  }else{
@@ -127,6 +126,14 @@ function idealGordura(sexo,idade){
  return idade<30?'18–25%':(idade<50?'20–28%':'22–32%');
 }
 
+// Peso ideal (Devine)
+function pesoIdeal(altura, sexo){
+ let alturaCm = altura*100;
+ let base = sexo==='M' ? 50 : 45.5;
+ let extra = ((alturaCm - 152.4)/2.54) * 2.3;
+ return base + (extra>0?extra:0);
+}
+
 function calcular(){
  let peso=v('peso'),altura=v('altura'),idade=v('idade');
  let sexo=document.getElementById('sexo').value;
@@ -134,6 +141,7 @@ function calcular(){
  // IMC
  let imc=peso/(altura*altura);
  let imcClass=classIMC(imc);
+ let pesoIdealCalc = pesoIdeal(altura, sexo);
 
  // JP7 (18–61 anos)
  let soma=v('triceps')+v('subescapular')+v('supra')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
@@ -141,7 +149,7 @@ function calcular(){
   ?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*idade)
   :1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*idade);
  let gordura=(495/dens)-450;
- let classG=classGordura(gordura,sexo,idade);
+ let classG=classGordura(gordura,sexo);
  let ideal=idealGordura(sexo,idade);
 
  // Componentes de peso
@@ -157,6 +165,7 @@ function calcular(){
 
  // Saída
  let res=`IMC: ${imc.toFixed(2)} (${imcClass})\n`+
+ `Peso ideal estimado: ${pesoIdealCalc.toFixed(2)} kg\n`+
  `Gordura (JP7): ${gordura.toFixed(2)}% (${classG})\n`+
  `Faixa ideal: ${ideal}\n`+
  `Peso total: ${peso.toFixed(2)} kg\n`+
@@ -172,10 +181,17 @@ function calcular(){
   data:{labels:hist.map((_,i)=>i+1),datasets:[{label:'% Gordura',data:hist}]}
  });
 
- // Gráfico colunas (componentes)
+ // Gráfico colunas com cores
  new Chart(document.getElementById('graficoColuna'),{
   type:'bar',
-  data:{labels:['Gordura','Muscular','Ósseo','Residual'],datasets:[{label:'Composição (kg)',data:[pesoGordura,pesoMuscular,pesoOsseo,pesoResidual]}]}
+  data:{
+    labels:['Gordura','Muscular','Ósseo','Residual'],
+    datasets:[{
+      label:'Composição (kg)',
+      data:[pesoGordura,pesoMuscular,pesoOsseo,pesoResidual],
+      backgroundColor:['#ef4444','#22c55e','#3b82f6','#f59e0b']
+    }]
+  }
  });
 }
 </script>
