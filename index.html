@@ -13,8 +13,9 @@ h1{color:#a78bfa}
 h2{margin-top:20px;color:#c4b5fd}
 input, select, textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:none}
 button{margin-top:10px;background:#7c3aed;color:#fff;padding:10px;border:none;border-radius:8px;cursor:pointer}
-.result{margin-top:15px;background:#1f2937;padding:10px;border-radius:8px}
+.result{margin-top:15px;background:#1f2937;padding:10px;border-radius:8px;white-space:pre-line}
 canvas{background:#fff;border-radius:8px;margin-top:15px}
+.preview{max-width:100px;margin:5px;border-radius:8px}
 </style>
 </head>
 <body>
@@ -31,10 +32,7 @@ canvas{background:#fff;border-radius:8px;margin-top:15px}
 <input id="telefone" placeholder="Telefone / WhatsApp">
 <input id="cidade" placeholder="Cidade">
 <input id="estado" placeholder="Estado">
-<select id="sexoCadastro">
-<option value="M">Masculino</option>
-<option value="F">Feminino</option>
-</select>
+<select id="sexoCadastro"><option value="M">Masculino</option><option value="F">Feminino</option></select>
 
 <h2>Anamnese</h2>
 <select id="objetivo">
@@ -43,29 +41,21 @@ canvas{background:#fff;border-radius:8px;margin-top:15px}
 <option>Condicionamento</option>
 <option>Saúde e Bem-estar</option>
 </select>
-<select id="nivelDor">
-<option>Sem dor</option>
-<option>Leve</option>
-<option>Moderada</option>
-<option>Alta</option>
-</select>
+<select id="nivelDor"><option>Sem dor</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
 <textarea id="lesoes" placeholder="Histórico de lesões"></textarea>
 <textarea id="medicamentos" placeholder="Uso de medicamentos"></textarea>
-<input id="frequencia" placeholder="Frequência semanal de treino">
-<input id="tempoPratica" placeholder="Há quanto tempo pratica atividade física">
+<input id="frequencia" placeholder="Frequência semanal">
+<input id="tempoPratica" placeholder="Tempo de prática">
 
 <h2>Avaliação Postural (Fotos)</h2>
-<input type="file" accept="image/*" onchange="preview(this,'fotoFrente')">
-<img id="fotoFrente" class="preview">
-<input type="file" accept="image/*" onchange="preview(this,'fotoLado')">
-<img id="fotoLado" class="preview">
-<input type="file" accept="image/*" onchange="preview(this,'fotoCostas')">
-<img id="fotoCostas" class="preview">
+<input type="file" accept="image/*" onchange="preview(this,'f1')"><img id="f1" class="preview">
+<input type="file" accept="image/*" onchange="preview(this,'f2')"><img id="f2" class="preview">
+<input type="file" accept="image/*" onchange="preview(this,'f3')"><img id="f3" class="preview">
 
-<h2>Dados</h2>
+<h2>Dados Corporais</h2>
 <input id="peso" placeholder="Peso (kg)">
 <input id="altura" placeholder="Altura (m)">
-<input id="idade" placeholder="Idade">
+<input id="idade" placeholder="Idade (18 a 61)">
 <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
 
 <h2>Circunferências</h2>
@@ -84,7 +74,7 @@ canvas{background:#fff;border-radius:8px;margin-top:15px}
 <input id="bracoD" placeholder="Braço Direito">
 <input id="bracoE" placeholder="Braço Esquerdo">
 
-<h2>Dobras Cutâneas</h2>
+<h2>Dobras Cutâneas (JP7 + extras)</h2>
 <input id="triceps" placeholder="Tríceps">
 <input id="biceps" placeholder="Bíceps">
 <input id="subescapular" placeholder="Subescapular">
@@ -105,74 +95,88 @@ canvas{background:#fff;border-radius:8px;margin-top:15px}
 <button onclick="window.print()">Imprimir / PDF</button>
 
 <div id="resultado" class="result"></div>
-<canvas id="grafico"></canvas>
+<canvas id="graficoLinha"></canvas>
+<canvas id="graficoColuna"></canvas>
 </div>
 
 <script>
 let hist = JSON.parse(localStorage.getItem('hist')||'[]');
 function v(id){return parseFloat(document.getElementById(id).value)||0}
+function preview(input,id){let r=new FileReader();r.onload=e=>document.getElementById(id).src=e.target.result;r.readAsDataURL(input.files[0]);}
+
+function classIMC(imc){
+ if(imc<18.5) return 'Abaixo do peso';
+ if(imc<25) return 'Normal';
+ if(imc<30) return 'Sobrepeso';
+ if(imc<35) return 'Obesidade I';
+ if(imc<40) return 'Obesidade II';
+ return 'Obesidade III';
+}
+
+function classGordura(p,sexo,idade){
+ // faixas simples por sexo
+ if(sexo==='M'){
+  if(p<8) return 'Excelente'; if(p<15) return 'Bom'; if(p<20) return 'Médio'; if(p<25) return 'Regular'; return 'Ruim';
+ }else{
+  if(p<15) return 'Excelente'; if(p<22) return 'Bom'; if(p<28) return 'Médio'; if(p<33) return 'Regular'; return 'Ruim';
+ }
+}
+
+function idealGordura(sexo,idade){
+ if(sexo==='M') return idade<30?'10–15%':(idade<50?'12–18%':'14–22%');
+ return idade<30?'18–25%':(idade<50?'20–28%':'22–32%');
+}
 
 function calcular(){
-let peso=v('peso'),altura=v('altura'),idade=v('idade');
-let sexo=document.getElementById('sexo').value;
+ let peso=v('peso'),altura=v('altura'),idade=v('idade');
+ let sexo=document.getElementById('sexo').value;
 
-let imc = peso/(altura*altura);
-let rcq = v('cintura')/v('quadril');
+ // IMC
+ let imc=peso/(altura*altura);
+ let imcClass=classIMC(imc);
 
-// JP7
-let soma=v('triceps')+v('subescapular')+v('supra')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
-let dens= sexo==='M'
-?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*idade)
-:1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*idade);
-let gordura=(495/dens)-450;
+ // JP7 (18–61 anos)
+ let soma=v('triceps')+v('subescapular')+v('supra')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
+ let dens= sexo==='M'
+  ?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*idade)
+  :1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*idade);
+ let gordura=(495/dens)-450;
+ let classG=classGordura(gordura,sexo,idade);
+ let ideal=idealGordura(sexo,idade);
 
-// Deurenberg
-let gordura2=1.20*imc+0.23*idade-(sexo==='M'?16.2:5.4);
+ // Componentes de peso
+ let pesoGordura=peso*(gordura/100);
+ let pesoMagro=peso-pesoGordura;
+ let pesoOsseo=peso*0.15;
+ let pesoResidual=peso*0.10;
+ let pesoMuscular=pesoMagro - pesoOsseo - pesoResidual;
 
-// Durnin simplificado
-let gordura3=gordura*0.95;
+ // Histórico
+ hist.push(gordura);
+ localStorage.setItem('hist',JSON.stringify(hist));
 
-// Pesos corporais
-let pesoGordura = peso*(gordura/100);
-let pesoMagro = peso - pesoGordura;
-let pesoOsseo = peso*0.15;
-let pesoResidual = peso*0.10;
+ // Saída
+ let res=`IMC: ${imc.toFixed(2)} (${imcClass})\n`+
+ `Gordura (JP7): ${gordura.toFixed(2)}% (${classG})\n`+
+ `Faixa ideal: ${ideal}\n`+
+ `Peso total: ${peso.toFixed(2)} kg\n`+
+ `Peso gordura: ${pesoGordura.toFixed(2)} kg\n`+
+ `Peso muscular: ${pesoMuscular.toFixed(2)} kg\n`+
+ `Peso ósseo: ${pesoOsseo.toFixed(2)} kg\n`+
+ `Peso residual: ${pesoResidual.toFixed(2)} kg`;
+ document.getElementById('resultado').innerText=res;
 
-// Somatotipo
-let endo = -0.7182 + 0.1451*(v('triceps')+v('subescapular')+v('supra'));
-let meso = (0.858*v('umero'))+(0.601*v('femur'))+(0.188*v('bracoD'))+(0.161*v('pantD'))-0.131*(altura*100)+4.5;
-let hwr=(altura*100)/Math.cbrt(peso);
-let ecto = hwr>40?0.732*hwr-28.58:0.1;
+ // Gráfico linha (evolução)
+ new Chart(document.getElementById('graficoLinha'),{
+  type:'line',
+  data:{labels:hist.map((_,i)=>i+1),datasets:[{label:'% Gordura',data:hist}]}
+ });
 
-hist.push(gordura);
-localStorage.setItem('hist',JSON.stringify(hist));
-
-let ideal = idade<30?10:idade<50?15:20;
-
-let res=`
-IMC: ${imc.toFixed(2)}
-RCQ: ${rcq.toFixed(2)}
-% Gordura JP7: ${gordura.toFixed(2)}
-Deurenberg: ${gordura2.toFixed(2)}
-Durnin: ${gordura3.toFixed(2)}
-Faixa ideal: ${ideal}%
-Peso gordura: ${pesoGordura.toFixed(2)}kg
-Peso magro: ${pesoMagro.toFixed(2)}kg
-Peso ósseo: ${pesoOsseo.toFixed(2)}kg
-Residual: ${pesoResidual.toFixed(2)}kg
-Somatotipo:
-Endo ${endo.toFixed(2)}
-Meso ${meso.toFixed(2)}
-Ecto ${ecto.toFixed(2)}
-`;
-
-
-document.getElementById('resultado').innerText=res;
-
-new Chart(document.getElementById('grafico'),{
- type:'line',
- data:{labels:hist.map((_,i)=>i+1),datasets:[{label:'% Gordura',data:hist}]}
-});
+ // Gráfico colunas (componentes)
+ new Chart(document.getElementById('graficoColuna'),{
+  type:'bar',
+  data:{labels:['Gordura','Muscular','Ósseo','Residual'],datasets:[{label:'Composição (kg)',data:[pesoGordura,pesoMuscular,pesoOsseo,pesoResidual]}]}
+ });
 }
 </script>
 </body>
