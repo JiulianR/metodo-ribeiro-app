@@ -136,6 +136,12 @@ function pesoIdeal(altura, sexo){
 
 function calcular(){
  let peso=v('peso'),altura=v('altura'),idade=v('idade');
+
+ // Correção: evitar divisão por zero
+ if(altura <= 0){
+  alert('Informe altura válida');
+  return;
+ }
  let sexo=document.getElementById('sexo').value;
 
  // IMC
@@ -163,8 +169,27 @@ function calcular(){
  hist.push(gordura);
  localStorage.setItem('hist',JSON.stringify(hist));
 
- // Saída
- let res=`IMC: ${imc.toFixed(2)} (${imcClass})\n`+
+ // Análise de peso ideal
+let pesoMin = pesoIdealCalc * 0.9;
+let pesoMax = pesoIdealCalc * 1.1;
+let diferenca = peso - pesoIdealCalc;
+let ajuste = diferenca > 0 ? `Reduzir ${Math.abs(diferenca).toFixed(2)} kg` : `Ganhar ${Math.abs(diferenca).toFixed(2)} kg`;
+let adequacao = (peso / pesoIdealCalc) * 100;
+let recomendacao = '';
+
+if(adequacao < 90){
+ recomendacao = 'Abaixo do ideal: foco em ganho de massa e fortalecimento';
+}else if(adequacao <= 110){
+ recomendacao = 'Dentro do ideal: manter e otimizar composição corporal';
+}else{
+ recomendacao = 'Acima do ideal: foco em redução de gordura e condicionamento';
+}
+
+// Saída
+ let res=`IMC: ${imc.toFixed(2)} (${imcClass})
+`+
+ `Peso ideal estimado: ${pesoIdealCalc.toFixed(1)} kg (referência saudável)
+`+
  `Peso ideal estimado: ${pesoIdealCalc.toFixed(2)} kg\n`+
  `Gordura (JP7): ${gordura.toFixed(2)}% (${classG})\n`+
  `Faixa ideal: ${ideal}\n`+
@@ -173,7 +198,16 @@ function calcular(){
  `Peso muscular: ${pesoMuscular.toFixed(2)} kg\n`+
  `Peso ósseo: ${pesoOsseo.toFixed(2)} kg\n`+
  `Peso residual: ${pesoResidual.toFixed(2)} kg`;
- document.getElementById('resultado').innerText=res;
+ res += `
+Faixa de peso ideal: ${pesoMin.toFixed(2)} kg - ${pesoMax.toFixed(2)} kg`+
+`
+Ajuste necessário: ${ajuste}`+
+`
+Adequação ao ideal: ${adequacao.toFixed(1)}%`+
+`
+Recomendação: ${recomendacao}`;
+
+document.getElementById('resultado').innerText=res;
 
  // Gráfico linha (evolução)
  new Chart(document.getElementById('graficoLinha'),{
