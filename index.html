@@ -1,306 +1,245 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Método Ribeiro Elite CLÍNICO</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
-body{margin:0;font-family:'Poppins',sans-serif;background:#0b0f1a;color:#fff}
-.header{padding:12px;display:flex;justify-content:space-between;background:#111827}
-.container{padding:15px;max-width:520px;margin:auto}
+body{margin:0;font-family:Arial;background:#0b0f1a;color:#fff}
+.container{max-width:520px;margin:auto;padding:15px}
 .step{display:none}
 .step.active{display:block}
-.card{background:#111827;padding:16px;border-radius:14px;margin-bottom:12px}
-input,select,textarea{width:100%;padding:10px;margin:5px 0;border:none;border-radius:10px;background:#1f2937;color:#fff}
-button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
-.btn-next{background:#7c3aed}
-.btn-back{background:#374151}
-.progress{height:6px;background:#1f2937;border-radius:10px;margin-bottom:10px}
-.progress-bar{height:6px;background:#7c3aed;width:0%}
+.card{background:#111827;padding:15px;border-radius:12px;margin-bottom:10px}
+input,select,textarea{width:100%;padding:10px;margin:5px 0;border:none;border-radius:8px;background:#1f2937;color:#fff}
+button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:10px;background:#7c3aed;color:#fff}
+.progress{height:5px;background:#222;border-radius:10px;margin-bottom:10px}
+.bar{height:5px;background:#7c3aed;width:0%}
 </style>
 </head>
-<body><div class="header">
-<span>Método Ribeiro CLÍNICO PRO</span>
-<select onchange="setLang(this.value)">
-<option value="pt">PT</option>
-<option value="en">EN</option>
-</select>
-</div><div class="container"><!-- HOME --><div class="step active" id="homeStep">
-<div style="height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:url('https://img.freepik.com/fotos-gratis/mulher-ajudando-homem-na-academia_30893602.jpg') center/cover no-repeat;border-radius:14px;">
-<h1 style="background:rgba(0,0,0,0.6);padding:12px;border-radius:10px;">Método Ribeiro - App de Avaliação Física</h1>
-<button class="btn-next" onclick="startApp()">Iniciar Avaliação</button>
+
+<body>
+
+<div class="container">
+
+<div class="progress"><div id="bar" class="bar"></div></div>
+
+<!-- HOME -->
+<div class="step active">
+<div class="card" style="height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:url('https://img.freepik.com/fotos-gratis/mulher-ajudando-homem-na-academia_30893602.jpg') center/cover">
+<h2 style="background:rgba(0,0,0,0.6);padding:10px;border-radius:10px">Método Ribeiro</h2>
+<button onclick="start()">Iniciar Avaliação</button>
 </div>
 </div>
-<div class="progress"><div id="bar" class="progress-bar"></div></div><!-- STEP 0 CADASTRO --><div class="card"><small>Cadastro: Nesta etapa são coletados os dados básicos do avaliado, essenciais para identificação e cálculo dos protocolos.</small></div>
+
+<!-- CADASTRO -->
 <div class="step">
 <div class="card">
-<input id="nome" placeholder="Nome completo">
+<h3>Cadastro</h3>
+<input id="nome" placeholder="Nome">
 <input id="idade" placeholder="Idade">
 <input id="peso" placeholder="Peso">
 <input id="altura" placeholder="Altura">
 <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
 </div>
-<button class="btn-next" onclick="next()">Próximo</button>
-</div><!-- STEP 1 ANAMNESE COMPLETA --><div class="card"><small>Anamnese: Levantamento de histórico de saúde, dores, limitações e objetivos para direcionamento seguro do treinamento.</small></div>
-<div class="step">
-<div class="card">
-<select id="objetivo"><option>Emagrecer</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select>
-<select><option>Sem dor</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
-<textarea placeholder="Histórico de lesões"></textarea>
-<textarea placeholder="Uso de medicamentos"></textarea>
-<select id="frequencia">
-<option value="1">1x/semana - Muito baixo (iniciante ou sedentário)</option>
-<option value="2">2x/semana - Baixo (fase de adaptação)</option>
-<option value="3">3x/semana - Moderado (manutenção da saúde)</option>
-<option value="4">4x/semana - Moderado/alto (evolução física consistente)</option>
-<option value="5">5x/semana - Alto (foco em performance e estética)</option>
-<option value="6">6x/semana - Muito alto (treino intenso)</option>
-<option value="7">7x/semana - Extremo (nível atleta / alta demanda)</option>
-</select>
-<select><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
-<textarea placeholder="Objetivo detalhado"></textarea>
-<textarea placeholder="Histórico físico"></textarea>
-<textarea placeholder="Limitações"></textarea>
-<textarea placeholder="Observações"></textarea>
+<button onclick="next()">Próximo</button>
 </div>
-<button class="btn-back" onclick="back()">Voltar</button>
-<button class="btn-next" onclick="next()">Próximo</button>
-</div><!-- STEP 2 POSTURAL --><div class="card"><small>Avaliação Postural: Inserção de fotos para análise visual (frente, lado e costas).</small></div>
-<div class="step">
-<div class="card">
-<input type="file" accept="image/*">
-<input type="file" accept="image/*">
-<input type="file" accept="image/*"><div class="card">
-<div class="title">Avaliação Postural Detalhada</div><h4>Vista Anterior</h4>
-<select id="cabeca"><option>Cabeça alinhada</option><option>Desvio direita</option><option>Desvio esquerda</option></select>
-<select id="ombros"><option>Ombros alinhados</option><option>Desnível</option></select>
-<select id="pelve"><option>Pelve alinhada</option><option>Inclinação</option></select><h4>Vista Lateral</h4>
-<select id="cabecaLat"><option>Postura normal</option><option>Cabeça anteriorizada</option></select>
-<select id="coluna"><option>Coluna normal</option><option>Cifose aumentada</option><option>Lordose aumentada</option></select><h4>Vista Posterior</h4>
-<select id="escapula"><option>Escápulas simétricas</option><option>Assimétricas</option></select>
-<select id="colunaPost"><option>Coluna alinhada</option><option>Escoliose</option></select><textarea id="obsPostural" placeholder="Observações posturais"></textarea><button onclick="gerarLaudoPostural()">Gerar Laudo Postural</button>
 
-<div id="laudoPostural"></div></div>
-</div>
-<button class="btn-back" onclick="back()">Voltar</button>
-<button class="btn-next" onclick="next()">Próximo</button>
-</div><!-- STEP 3 CIRCUNFERENCIAS --><div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
-<div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
+<!-- ANAMNESE -->
 <div class="step">
 <div class="card">
+<h3>Anamnese Completa</h3>
+
+<select><option>Objetivo: Emagrecer</option><option>Hipertrofia</option><option>Saúde</option></select>
+<select><option>Dor: Nenhuma</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
+
+<textarea placeholder="1. Histórico de doenças"></textarea>
+<textarea placeholder="2. Lesões"></textarea>
+<textarea placeholder="3. Medicamentos"></textarea>
+<textarea placeholder="4. Cirurgias"></textarea>
+<textarea placeholder="5. Histórico familiar"></textarea>
+
+<select>
+<option>6. Frequência treino 1x</option>
+<option>2x</option><option>3x</option><option>4x</option><option>5x</option><option>6x</option><option>7x</option>
+</select>
+
+<select>
+<option>7. Nível iniciante</option>
+<option>Intermediário</option>
+<option>Avançado</option>
+</select>
+
+<textarea placeholder="8. Objetivo detalhado"></textarea>
+<textarea placeholder="9. Limitações"></textarea>
+<textarea placeholder="10. Observações gerais"></textarea>
+
+</div>
+<button onclick="next()">Próximo</button>
+</div>
+
+<!-- POSTURAL -->
+<div class="step">
+<div class="card">
+<h3>Avaliação Postural (até 5 fotos)</h3>
+
+<input type="file">
+<input type="file">
+<input type="file">
+<input type="file">
+<input type="file">
+
+<select id="cabeca"><option>Alinhada</option><option>Desvio</option></select>
+<select id="ombro"><option>Alinhado</option><option>Desnível</option></select>
+<select id="coluna"><option>Normal</option><option>Alterada</option></select>
+
+<button onclick="laudoPostural()">Gerar Laudo</button>
+<div id="laudo"></div>
+
+</div>
+<button onclick="next()">Próximo</button>
+</div>
+
+<!-- CIRCUNFERÊNCIAS -->
+<div class="step">
+<div class="card">
+<h3>Circunferências</h3>
+
 <input id="cintura" placeholder="Cintura">
 <input id="quadril" placeholder="Quadril">
-<input id="torax" placeholder="Tórax">
-<input id="ombros" placeholder="Ombros">
-<input id="pescoco" placeholder="Pescoço">
+<input placeholder="Peitoral">
+<input placeholder="Ombros">
+<input placeholder="Pescoço">
+
 <input id="pantD" placeholder="Panturrilha D">
-<input id="pantE" placeholder="Panturrilha E">
-<input id="coxaD" placeholder="Coxa D">
-<input id="coxaE" placeholder="Coxa E">
-<input id="bracoD" placeholder="Braço D">
-<input id="bracoE" placeholder="Braço E">
-<input id="anteD" placeholder="Antebraço D">
-<input id="anteE" placeholder="Antebraço E">
+<input placeholder="Panturrilha E">
+<input id="coxa" placeholder="Coxa">
+<input placeholder="Coxa E">
+
+<input id="braco" placeholder="Braço D">
+<input placeholder="Braço E">
+
+<input placeholder="Antebraço D">
+<input placeholder="Antebraço E">
+
 </div>
-<button class="btn-back" onclick="back()">Voltar</button>
-<button class="btn-next" onclick="next()">Próximo</button>
-</div><!-- STEP 3 DOBRAS --><div class="card"><small>Dobras cutâneas: Avaliação da gordura subcutânea através do protocolo Jackson & Pollock (7 dobras).</small></div>
+<button onclick="next()">Próximo</button>
+</div>
+
+<!-- DOBRAS -->
 <div class="step">
 <div class="card">
+<h3>Dobras Cutâneas</h3>
+
 <input id="triceps" placeholder="Tríceps">
-<input id="biceps" placeholder="Bíceps">
+<input placeholder="Bíceps">
 <input id="subescapular" placeholder="Subescapular">
 <input id="supra" placeholder="Supra-ilíaca">
-<input id="peitoral" placeholder="Peitoral">
-<input id="axilar" placeholder="Axilar">
+<input placeholder="Peitoral">
+<input placeholder="Axilar">
 <input id="abdomen" placeholder="Abdômen">
-<input id="coxa" placeholder="Coxa">
-<input id="pant" placeholder="Panturrilha">
+<input id="coxaD" placeholder="Coxa">
+<input placeholder="Panturrilha">
+
 </div>
-<button class="btn-back" onclick="back()">Voltar</button>
-<button class="btn-next" onclick="next()">Próximo</button>
-</div><!-- STEP 4 DIAMETROS --><div class="card"><small>Diâmetros ósseos: Utilizados para cálculo de estrutura corporal e somatotipo.</small></div>
+<button onclick="next()">Próximo</button>
+</div>
+
+<!-- DIÂMETROS -->
 <div class="step">
 <div class="card">
+<h3>Diâmetros Ósseos</h3>
+
 <input id="femur" placeholder="Fêmur">
-<input id="punho" placeholder="Punho">
 <input id="umero" placeholder="Úmero">
-<input id="tornozelo" placeholder="Tornozelo">
+<input placeholder="Punho">
+<input placeholder="Tornozelo">
+
 </div>
-<button class="btn-back" onclick="back()">Voltar</button>
-<button class="btn-next" onclick="calc()">Finalizar</button>
-</div><!-- RESULTADO --><div class="card"><small>Resultado Final: Apresentação completa dos dados calculados, composição corporal, risco e recomendações.</small></div>
+<button onclick="calc()">Finalizar</button>
+</div>
+
+<!-- RESULTADO -->
 <div class="step">
 <div class="card">
+<h3>Resultado</h3>
 <div id="res"></div>
 <canvas id="grafico"></canvas>
 </div>
-<button onclick="window.print()">Gerar PDF</button>
-<button class="btn-back" onclick="back()">Voltar</button>
-</div></div><!-- SISTEMA DE ALUNOS --><div class="card">
-<h3>Cadastro de Alunos</h3>
-<input id="alunoNome" placeholder="Nome do aluno">
-<button onclick="salvarAluno()">Salvar Aluno</button>
-<select id="listaAlunos" onchange="carregarAluno()"></select>
-</div><script>
-let lang='pt';
+</div>
 
-function setLang(l){
- lang=l;
- const map={
-  pt:{
-   nome:'Nome completo',idade:'Idade',peso:'Peso',altura:'Altura',
-   objetivo:['Emagrecer','Hipertrofia','Condicionamento','Saúde'],
-  },
-  en:{
-   nome:'Full name',idade:'Age',peso:'Weight',altura:'Height',
-   objetivo:['Weight loss','Hypertrophy','Conditioning','Health'],
-  }
- };
+</div>
 
- document.getElementById('nome').placeholder=map[l].nome;
- document.getElementById('idade').placeholder=map[l].idade;
- document.getElementById('peso').placeholder=map[l].peso;
- document.getElementById('altura').placeholder=map[l].altura;
+<script>
 
- let obj=document.getElementById('objetivo');
- for(let i=0;i<obj.options.length;i++){
-  obj.options[i].text=map[l].objetivo[i];
- }
+let step=0
+const bar=document.getElementById('bar')
 
- // traduz textos fixos
- document.querySelectorAll('small').forEach(el=>{
-  if(l==='en'){
-   el.innerText=el.innerText
-    .replace('Cadastro','Registration')
-    .replace('Anamnese','Assessment')
-    .replace('Avaliação Postural','Postural Assessment')
-    .replace('Circunferências','Circumferences')
-    .replace('Dobras cutâneas','Skinfolds')
-    .replace('Diâmetros ósseos','Bone diameters')
-    .replace('Resultado Final','Final Result');
-  }else{
-   location.reload();
-  }
- });
-}
-
-let step=-1,total=7,hist=JSON.parse(localStorage.getItem('hist')||'[]');
-const bar=document.getElementById('bar');
-let alunos=JSON.parse(localStorage.getItem('alunos')||'[]');
-let alunoAtual=null;
-
-function atualizarLista(){
- let select=document.getElementById('listaAlunos');
- select.innerHTML='';
- alunos.forEach((a,i)=>{
-  let opt=document.createElement('option');
-  opt.value=i;
-  opt.text=a.nome;
-  select.appendChild(opt);
- });
-}
-
-function salvarAluno(){
- let nome=document.getElementById('alunoNome').value;
- if(!nome) return alert('Digite o nome');
- alunos.push({nome:nome,avaliacoes:[]});
- localStorage.setItem('alunos',JSON.stringify(alunos));
- atualizarLista();
-}
-
-function carregarAluno(){
- let i=document.getElementById('listaAlunos').value;
- alunoAtual=alunos[i];
- alert('Aluno carregado: '+alunoAtual.nome);
-}
-
-atualizarLista();
 function show(){
- let steps=document.querySelectorAll('.step');
- steps.forEach((e,i)=>{
-  if(step===-1){
-   e.classList.toggle('active', i===0);
-  }else{
-   e.classList.toggle('active', i===step+1);
-  }
- });
- bar.style.width=(step<=0?0:(step/(total-1))*100)+'%';
+ let steps=document.querySelectorAll('.step')
+ steps.forEach((e,i)=>e.classList.toggle('active',i===step))
+ bar.style.width=(step/(steps.length-1))*100+'%'
 }
-function startApp(){
- step=0;
- show();
+
+function start(){
+ step=1
+ show()
 }
-function next(){if(step<total-1){step++;show()}}
-function back(){if(step>0){step--;show()}}
+
+function next(){
+ let steps=document.querySelectorAll('.step')
+ if(step<steps.length-1){step++;show()}
+}
 
 function calc(){
- let p=+peso.value||0,a=+altura.value||0,i=+idade.value||0,s=sexo.value;
- let imc=p/(a*a);
- let rcq=(+cintura.value)/(+quadril.value);
 
- let soma=+triceps.value+ +subescapular.value+ +supra.value+ +peitoral.value+ +axilar.value+ +abdomen.value+ +coxa.value;
- let dens=s==='M'?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*i):1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*i);
- let gordura=(495/dens)-450;
+ let p=+peso.value
+ let a=+altura.value
+ let i=+idade.value
 
- let gorduraKg=p*(gordura/100);
- let massaMagra=p-gorduraKg;
- let osseo=p*0.15;
- let residual=p*0.1;
- let muscular=massaMagra-osseo-residual;
+ let imc=p/(a*a)
+ let rcq=(+cintura.value)/(+quadril.value)
 
- let pesoIdeal=massaMagra/(1-0.18);
- let faixaMin=pesoIdeal*0.9,faixaMax=pesoIdeal*1.1;
- let adequacao=(p/pesoIdeal)*100;
+ let soma=+triceps.value+ +subescapular.value+ +supra.value+ +abdomen.value+ +coxaD.value
+ let dens=1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*i)
+ let gordura=(495/dens)-450
 
- let endo=-0.7182+0.1451*(+triceps.value+ +subescapular.value+ +supra.value);
- let meso=(0.858*+umero.value)+(0.601*+femur.value)+(0.188*+bracoD.value)+(0.161*+pantD.value)-0.131*(a*100)+4.5;
- let ecto=(a*100)/Math.cbrt(p)>40?0.732*((a*100)/Math.cbrt(p))-28.58:0.1;
+ let gorduraKg=p*(gordura/100)
+ let massa=p-gorduraKg
 
- hist.push(gordura);
-
-if(alunoAtual){
- alunoAtual.avaliacoes.push({
-  data:new Date().toLocaleDateString(),
-  gordura:gordura,
-  peso:p
- });
- localStorage.setItem('alunos',JSON.stringify(alunos));
-}
- localStorage.setItem('hist',JSON.stringify(hist));
+ let pesoIdeal=massa/(1-0.18)
 
  res.innerText=
- `IMC: ${imc.toFixed(2)}\nRCQ: ${rcq.toFixed(2)}\n% Gordura: ${gordura.toFixed(2)}\nPeso ideal: ${pesoIdeal.toFixed(2)}kg\nFaixa: ${faixaMin.toFixed(2)}-${faixaMax.toFixed(2)}\nAdequação: ${adequacao.toFixed(1)}%\nMuscular: ${muscular.toFixed(2)}kg\nÓsseo: ${osseo.toFixed(2)}kg\nResidual: ${residual.toFixed(2)}kg\nSomatotipo: Endo ${endo.toFixed(2)} | Meso ${meso.toFixed(2)} | Ecto ${ecto.toFixed(2)}`;
+`IMC: ${imc.toFixed(2)}
+RCQ: ${rcq.toFixed(2)}
+Gordura: ${gordura.toFixed(2)}%
+Peso ideal: ${pesoIdeal.toFixed(2)} kg`
 
- new Chart(grafico,{type:'bar',data:{labels:['Total','Gordura','Muscular','Ósseo','Residual'],datasets:[{data:[p,gorduraKg,muscular,osseo,residual]}]}});
+ new Chart(grafico,{
+ type:'bar',
+ data:{labels:['Peso','Gordura','Massa Magra'],
+ datasets:[{data:[p,gorduraKg,massa]}]}
+ })
 
- next();
+ next()
 }
 
-function gerarLaudoPostural(){
- let texto="Análise Postural:
-";
- if(cabeca.value!=="Cabeça alinhada") texto+="Desvio de cabeça identificado.
-";
- if(ombros.value!=="Ombros alinhados") texto+="Desnível de ombros.
-";
- if(pelve.value!=="Pelve alinhada") texto+="Alteração pélvica.
-";
- if(cabecaLat.value!=="Postura normal") texto+="Cabeça anteriorizada.
-";
- if(coluna.value!=="Coluna normal") texto+="Alteração na curvatura da coluna.
-";
- if(escapula.value!=="Escápulas simétricas") texto+="Assimetria escapular.
-";
- if(colunaPost.value!=="Coluna alinhada") texto+="Possível escoliose.
-";
- texto+="
-Recomendação:
-Treino corretivo, mobilidade e fortalecimento postural.";
- document.getElementById('laudoPostural').innerText=texto;
+function laudoPostural(){
+ let texto="Postura analisada:\n"
+ if(cabeca.value!="Alinhada") texto+="Desvio de cabeça\n"
+ if(ombro.value!="Alinhado") texto+="Desnível de ombros\n"
+ if(coluna.value!="Normal") texto+="Alteração de coluna\n"
+
+ texto+="Recomendação: treino corretivo"
+
+ document.getElementById('laudo').innerText=texto
 }
 
-show();
-</script></body>
- </html>
+show()
+
+</script>
+
+</body>
+</html>
