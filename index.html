@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,29 +20,19 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 .progress-bar{height:6px;background:#7c3aed;width:0%}
 </style>
 </head>
-<body>
-
-<div class="header">
+<body><div class="header">
 <span>Método Ribeiro CLÍNICO PRO</span>
 <select onchange="setLang(this.value)">
 <option value="pt">PT</option>
 <option value="en">EN</option>
 </select>
-</div>
-
-<div class="container">
-
-<!-- HOME -->
-<div class="step active" id="homeStep">
+</div><div class="container"><!-- HOME --><div class="step active" id="homeStep">
 <div style="height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:url('https://img.freepik.com/fotos-gratis/mulher-ajudando-homem-na-academia_30893602.jpg') center/cover no-repeat;border-radius:14px;">
 <h1 style="background:rgba(0,0,0,0.6);padding:12px;border-radius:10px;">Método Ribeiro - App de Avaliação Física</h1>
 <button class="btn-next" onclick="startApp()">Iniciar Avaliação</button>
 </div>
 </div>
-<div class="progress"><div id="bar" class="progress-bar"></div></div>
-
-<!-- STEP 0 CADASTRO -->
-<div class="card"><small>Cadastro: Nesta etapa são coletados os dados básicos do avaliado, essenciais para identificação e cálculo dos protocolos.</small></div>
+<div class="progress"><div id="bar" class="progress-bar"></div></div><!-- STEP 0 CADASTRO --><div class="card"><small>Cadastro: Nesta etapa são coletados os dados básicos do avaliado, essenciais para identificação e cálculo dos protocolos.</small></div>
 <div class="step">
 <div class="card">
 <input id="nome" placeholder="Nome completo">
@@ -53,10 +42,7 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
 </div>
 <button class="btn-next" onclick="next()">Próximo</button>
-</div>
-
-<!-- STEP 1 ANAMNESE COMPLETA -->
-<div class="card"><small>Anamnese: Levantamento de histórico de saúde, dores, limitações e objetivos para direcionamento seguro do treinamento.</small></div>
+</div><!-- STEP 1 ANAMNESE COMPLETA --><div class="card"><small>Anamnese: Levantamento de histórico de saúde, dores, limitações e objetivos para direcionamento seguro do treinamento.</small></div>
 <div class="step">
 <div class="card">
 <select id="objetivo"><option>Emagrecer</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select>
@@ -80,45 +66,26 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 </div>
 <button class="btn-back" onclick="back()">Voltar</button>
 <button class="btn-next" onclick="next()">Próximo</button>
-</div>
-
-<!-- STEP 2 POSTURAL -->
-<div class="card"><small>Avaliação Postural: Inserção de fotos para análise visual (frente, lado e costas).</small></div>
+</div><!-- STEP 2 POSTURAL --><div class="card"><small>Avaliação Postural: Inserção de fotos para análise visual (frente, lado e costas).</small></div>
 <div class="step">
 <div class="card">
 <input type="file" accept="image/*">
 <input type="file" accept="image/*">
-<input type="file" accept="image/*">
-
-<div class="card">
-<div class="title">Avaliação Postural Detalhada</div>
-
-<h4>Vista Anterior</h4>
+<input type="file" accept="image/*"><div class="card">
+<div class="title">Avaliação Postural Detalhada</div><h4>Vista Anterior</h4>
 <select id="cabeca"><option>Cabeça alinhada</option><option>Desvio direita</option><option>Desvio esquerda</option></select>
 <select id="ombros"><option>Ombros alinhados</option><option>Desnível</option></select>
-<select id="pelve"><option>Pelve alinhada</option><option>Inclinação</option></select>
-
-<h4>Vista Lateral</h4>
+<select id="pelve"><option>Pelve alinhada</option><option>Inclinação</option></select><h4>Vista Lateral</h4>
 <select id="cabecaLat"><option>Postura normal</option><option>Cabeça anteriorizada</option></select>
-<select id="coluna"><option>Coluna normal</option><option>Cifose aumentada</option><option>Lordose aumentada</option></select>
-
-<h4>Vista Posterior</h4>
+<select id="coluna"><option>Coluna normal</option><option>Cifose aumentada</option><option>Lordose aumentada</option></select><h4>Vista Posterior</h4>
 <select id="escapula"><option>Escápulas simétricas</option><option>Assimétricas</option></select>
-<select id="colunaPost"><option>Coluna alinhada</option><option>Escoliose</option></select>
+<select id="colunaPost"><option>Coluna alinhada</option><option>Escoliose</option></select><textarea id="obsPostural" placeholder="Observações posturais"></textarea><button onclick="gerarLaudoPostural()">Gerar Laudo Postural</button>
 
-<textarea id="obsPostural" placeholder="Observações posturais"></textarea>
-
-<button onclick="gerarLaudoPostural()">Gerar Laudo Postural</button>
-<div id="laudoPostural"></div>
-
-</div>
+<div id="laudoPostural"></div></div>
 </div>
 <button class="btn-back" onclick="back()">Voltar</button>
 <button class="btn-next" onclick="next()">Próximo</button>
-</div>
-
-<!-- STEP 3 CIRCUNFERENCIAS -->
-<div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
+</div><!-- STEP 3 CIRCUNFERENCIAS --><div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
 <div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
 <div class="step">
 <div class="card">
@@ -138,10 +105,7 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 </div>
 <button class="btn-back" onclick="back()">Voltar</button>
 <button class="btn-next" onclick="next()">Próximo</button>
-</div>
-
-<!-- STEP 3 DOBRAS -->
-<div class="card"><small>Dobras cutâneas: Avaliação da gordura subcutânea através do protocolo Jackson & Pollock (7 dobras).</small></div>
+</div><!-- STEP 3 DOBRAS --><div class="card"><small>Dobras cutâneas: Avaliação da gordura subcutânea através do protocolo Jackson & Pollock (7 dobras).</small></div>
 <div class="step">
 <div class="card">
 <input id="triceps" placeholder="Tríceps">
@@ -156,10 +120,7 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 </div>
 <button class="btn-back" onclick="back()">Voltar</button>
 <button class="btn-next" onclick="next()">Próximo</button>
-</div>
-
-<!-- STEP 4 DIAMETROS -->
-<div class="card"><small>Diâmetros ósseos: Utilizados para cálculo de estrutura corporal e somatotipo.</small></div>
+</div><!-- STEP 4 DIAMETROS --><div class="card"><small>Diâmetros ósseos: Utilizados para cálculo de estrutura corporal e somatotipo.</small></div>
 <div class="step">
 <div class="card">
 <input id="femur" placeholder="Fêmur">
@@ -169,10 +130,7 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 </div>
 <button class="btn-back" onclick="back()">Voltar</button>
 <button class="btn-next" onclick="calc()">Finalizar</button>
-</div>
-
-<!-- RESULTADO -->
-<div class="card"><small>Resultado Final: Apresentação completa dos dados calculados, composição corporal, risco e recomendações.</small></div>
+</div><!-- RESULTADO --><div class="card"><small>Resultado Final: Apresentação completa dos dados calculados, composição corporal, risco e recomendações.</small></div>
 <div class="step">
 <div class="card">
 <div id="res"></div>
@@ -180,11 +138,12 @@ button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
 </div>
 <button onclick="window.print()">Gerar PDF</button>
 <button class="btn-back" onclick="back()">Voltar</button>
-</div>
-
-</div>
-
-<script>
+</div></div><!-- SISTEMA DE ALUNOS --><div class="card">
+<h3>Cadastro de Alunos</h3>
+<input id="alunoNome" placeholder="Nome do aluno">
+<button onclick="salvarAluno()">Salvar Aluno</button>
+<select id="listaAlunos" onchange="carregarAluno()"></select>
+</div><script>
 let lang='pt';
 
 function setLang(l){
@@ -228,8 +187,51 @@ function setLang(l){
 }
 
 let step=-1,total=7,hist=JSON.parse(localStorage.getItem('hist')||'[]');
-function show(){document.querySelectorAll('.step').forEach((e,i)=>e.classList.toggle('active',i===step));bar.style.width=(step/(total-1))*100+'%'}
-function startApp(){step=0;show();}
+const bar=document.getElementById('bar');
+let alunos=JSON.parse(localStorage.getItem('alunos')||'[]');
+let alunoAtual=null;
+
+function atualizarLista(){
+ let select=document.getElementById('listaAlunos');
+ select.innerHTML='';
+ alunos.forEach((a,i)=>{
+  let opt=document.createElement('option');
+  opt.value=i;
+  opt.text=a.nome;
+  select.appendChild(opt);
+ });
+}
+
+function salvarAluno(){
+ let nome=document.getElementById('alunoNome').value;
+ if(!nome) return alert('Digite o nome');
+ alunos.push({nome:nome,avaliacoes:[]});
+ localStorage.setItem('alunos',JSON.stringify(alunos));
+ atualizarLista();
+}
+
+function carregarAluno(){
+ let i=document.getElementById('listaAlunos').value;
+ alunoAtual=alunos[i];
+ alert('Aluno carregado: '+alunoAtual.nome);
+}
+
+atualizarLista();
+function show(){
+ let steps=document.querySelectorAll('.step');
+ steps.forEach((e,i)=>{
+  if(step===-1){
+   e.classList.toggle('active', i===0);
+  }else{
+   e.classList.toggle('active', i===step+1);
+  }
+ });
+ bar.style.width=(step<=0?0:(step/(total-1))*100)+'%';
+}
+function startApp(){
+ step=0;
+ show();
+}
 function next(){if(step<total-1){step++;show()}}
 function back(){if(step>0){step--;show()}}
 
@@ -257,6 +259,15 @@ function calc(){
  let ecto=(a*100)/Math.cbrt(p)>40?0.732*((a*100)/Math.cbrt(p))-28.58:0.1;
 
  hist.push(gordura);
+
+if(alunoAtual){
+ alunoAtual.avaliacoes.push({
+  data:new Date().toLocaleDateString(),
+  gordura:gordura,
+  peso:p
+ });
+ localStorage.setItem('alunos',JSON.stringify(alunos));
+}
  localStorage.setItem('hist',JSON.stringify(hist));
 
  res.innerText=
@@ -291,7 +302,5 @@ Treino corretivo, mobilidade e fortalecimento postural.";
 }
 
 show();
-</script>
-
-</body>
-</html>
+</script></body>
+ </html>
