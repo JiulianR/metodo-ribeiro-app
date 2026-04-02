@@ -3,78 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Método Ribeiro PRO ULTRA MAX</title>
+<title>Método Ribeiro Elite CLÍNICO</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
-.container{max-width:1200px;margin:auto;background:#111827;padding:20px;border-radius:12px}
-h1{color:#a78bfa}
-h2{margin-top:20px;color:#c4b5fd}
-input, select, textarea{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:none}
-button{margin-top:10px;background:#7c3aed;color:#fff;padding:10px;border:none;border-radius:8px;cursor:pointer}
-.result{margin-top:15px;background:#1f2937;padding:10px;border-radius:8px;white-space:pre-line}
-canvas{background:#fff;border-radius:8px;margin-top:15px}
-.preview{max-width:100px;margin:5px;border-radius:8px}
+body{margin:0;font-family:'Poppins',sans-serif;background:#0b0f1a;color:#fff}
+.header{padding:12px;display:flex;justify-content:space-between;background:#111827}
+.container{padding:15px;max-width:520px;margin:auto}
+.step{display:none}
+.step.active{display:block}
+.card{background:#111827;padding:16px;border-radius:14px;margin-bottom:12px}
+input,select,textarea{width:100%;padding:10px;margin:5px 0;border:none;border-radius:10px;background:#1f2937;color:#fff}
+button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:8px}
+.btn-next{background:#7c3aed}
+.btn-back{background:#374151}
+.progress{height:6px;background:#1f2937;border-radius:10px;margin-bottom:10px}
+.progress-bar{height:6px;background:#7c3aed;width:0%}
 </style>
 </head>
 <body>
-<div class="container">
 
-<div style="display:flex;align-items:center;gap:10px;">
-<img src="logo.png" style="height:60px">
-<h1>Método Ribeiro PRO ULTRA MAX</h1>
+<div class="header">
+<span>Método Ribeiro CLÍNICO PRO</span>
+<select onchange="setLang(this.value)">
+<option value="pt">PT</option>
+<option value="en">EN</option>
+</select>
 </div>
 
-<h2>Cadastro</h2>
+<div class="container">
+<div class="progress"><div id="bar" class="progress-bar"></div></div>
+
+<!-- STEP 0 CADASTRO -->
+<div class="card"><small>Cadastro: Nesta etapa são coletados os dados básicos do avaliado, essenciais para identificação e cálculo dos protocolos.</small></div>
+<div class="step active">
+<div class="card">
 <input id="nome" placeholder="Nome completo">
-<input id="nascimento" type="date">
-<input id="telefone" placeholder="Telefone / WhatsApp">
-<input id="cidade" placeholder="Cidade">
-<input id="estado" placeholder="Estado">
-<select id="sexoCadastro"><option value="M">Masculino</option><option value="F">Feminino</option></select>
-
-<h2>Anamnese</h2>
-<select id="objetivo">
-<option>Emagrecer</option>
-<option>Hipertrofia</option>
-<option>Condicionamento</option>
-<option>Saúde e Bem-estar</option>
-</select>
-<select id="nivelDor"><option>Sem dor</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
-<textarea id="lesoes" placeholder="Histórico de lesões"></textarea>
-<textarea id="medicamentos" placeholder="Uso de medicamentos"></textarea>
-<input id="frequencia" placeholder="Frequência semanal">
-<input id="tempoPratica" placeholder="Tempo de prática">
-
-<h2>Avaliação Postural (Fotos)</h2>
-<input type="file" accept="image/*" onchange="preview(this,'f1')"><img id="f1" class="preview">
-<input type="file" accept="image/*" onchange="preview(this,'f2')"><img id="f2" class="preview">
-<input type="file" accept="image/*" onchange="preview(this,'f3')"><img id="f3" class="preview">
-
-<h2>Dados Corporais</h2>
-<input id="peso" placeholder="Peso (kg)">
-<input id="altura" placeholder="Altura (m)">
-<input id="idade" placeholder="Idade (18 a 61)">
+<input id="idade" placeholder="Idade">
+<input id="peso" placeholder="Peso">
+<input id="altura" placeholder="Altura">
 <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
+</div>
+<button class="btn-next" onclick="next()">Próximo</button>
+</div>
 
-<h2>Circunferências</h2>
-<input id="pantD" placeholder="Panturrilha Direita">
-<input id="pantE" placeholder="Panturrilha Esquerda">
-<input id="coxaD" placeholder="Coxa Direita">
-<input id="coxaE" placeholder="Coxa Esquerda">
-<input id="quadril" placeholder="Quadril">
-<input id="abd" placeholder="Abdômen">
+<!-- STEP 1 ANAMNESE COMPLETA -->
+<div class="card"><small>Anamnese: Levantamento de histórico de saúde, dores, limitações e objetivos para direcionamento seguro do treinamento.</small></div>
+<div class="step">
+<div class="card">
+<select id="objetivo"><option>Emagrecer</option><option>Hipertrofia</option><option>Condicionamento</option><option>Saúde</option></select>
+<select><option>Sem dor</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
+<textarea placeholder="Histórico de lesões"></textarea>
+<textarea placeholder="Uso de medicamentos"></textarea>
+<select id="frequencia">
+<option value="1">1x/semana - Muito baixo (iniciante ou sedentário)</option>
+<option value="2">2x/semana - Baixo (fase de adaptação)</option>
+<option value="3">3x/semana - Moderado (manutenção da saúde)</option>
+<option value="4">4x/semana - Moderado/alto (evolução física consistente)</option>
+<option value="5">5x/semana - Alto (foco em performance e estética)</option>
+<option value="6">6x/semana - Muito alto (treino intenso)</option>
+<option value="7">7x/semana - Extremo (nível atleta / alta demanda)</option>
+</select>
+<select><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
+<textarea placeholder="Objetivo detalhado"></textarea>
+<textarea placeholder="Histórico físico"></textarea>
+<textarea placeholder="Limitações"></textarea>
+<textarea placeholder="Observações"></textarea>
+</div>
+<button class="btn-back" onclick="back()">Voltar</button>
+<button class="btn-next" onclick="next()">Próximo</button>
+</div>
+
+<!-- STEP 2 POSTURAL -->
+<div class="card"><small>Avaliação Postural: Inserção de fotos para análise visual (frente, lado e costas).</small></div>
+<div class="step">
+<div class="card">
+<input type="file" accept="image/*">
+<input type="file" accept="image/*">
+<input type="file" accept="image/*">
+
+<div class="card">
+<div class="title">Avaliação Postural Detalhada</div>
+
+<h4>Vista Anterior</h4>
+<select id="cabeca"><option>Cabeça alinhada</option><option>Desvio direita</option><option>Desvio esquerda</option></select>
+<select id="ombros"><option>Ombros alinhados</option><option>Desnível</option></select>
+<select id="pelve"><option>Pelve alinhada</option><option>Inclinação</option></select>
+
+<h4>Vista Lateral</h4>
+<select id="cabecaLat"><option>Postura normal</option><option>Cabeça anteriorizada</option></select>
+<select id="coluna"><option>Coluna normal</option><option>Cifose aumentada</option><option>Lordose aumentada</option></select>
+
+<h4>Vista Posterior</h4>
+<select id="escapula"><option>Escápulas simétricas</option><option>Assimétricas</option></select>
+<select id="colunaPost"><option>Coluna alinhada</option><option>Escoliose</option></select>
+
+<textarea id="obsPostural" placeholder="Observações posturais"></textarea>
+
+<button onclick="gerarLaudoPostural()">Gerar Laudo Postural</button>
+<div id="laudoPostural"></div>
+
+</div>
+</div>
+<button class="btn-back" onclick="back()">Voltar</button>
+<button class="btn-next" onclick="next()">Próximo</button>
+</div>
+
+<!-- STEP 3 CIRCUNFERENCIAS -->
+<div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
+<div class="card"><small>Circunferências: Medidas corporais utilizadas para análise de composição corporal e distribuição de massa.</small></div>
+<div class="step">
+<div class="card">
 <input id="cintura" placeholder="Cintura">
+<input id="quadril" placeholder="Quadril">
 <input id="torax" placeholder="Tórax">
 <input id="ombros" placeholder="Ombros">
 <input id="pescoco" placeholder="Pescoço">
-<input id="anteD" placeholder="Antebraço Direito">
-<input id="anteE" placeholder="Antebraço Esquerdo">
-<input id="bracoD" placeholder="Braço Direito">
-<input id="bracoE" placeholder="Braço Esquerdo">
+<input id="pantD" placeholder="Panturrilha D">
+<input id="pantE" placeholder="Panturrilha E">
+<input id="coxaD" placeholder="Coxa D">
+<input id="coxaE" placeholder="Coxa E">
+<input id="bracoD" placeholder="Braço D">
+<input id="bracoE" placeholder="Braço E">
+<input id="anteD" placeholder="Antebraço D">
+<input id="anteE" placeholder="Antebraço E">
+</div>
+<button class="btn-back" onclick="back()">Voltar</button>
+<button class="btn-next" onclick="next()">Próximo</button>
+</div>
 
-<h2>Dobras Cutâneas (JP7 + extras)</h2>
+<!-- STEP 3 DOBRAS -->
+<div class="card"><small>Dobras cutâneas: Avaliação da gordura subcutânea através do protocolo Jackson & Pollock (7 dobras).</small></div>
+<div class="step">
+<div class="card">
 <input id="triceps" placeholder="Tríceps">
 <input id="biceps" placeholder="Bíceps">
 <input id="subescapular" placeholder="Subescapular">
@@ -84,175 +145,144 @@ canvas{background:#fff;border-radius:8px;margin-top:15px}
 <input id="abdomen" placeholder="Abdômen">
 <input id="coxa" placeholder="Coxa">
 <input id="pant" placeholder="Panturrilha">
+</div>
+<button class="btn-back" onclick="back()">Voltar</button>
+<button class="btn-next" onclick="next()">Próximo</button>
+</div>
 
-<h2>Diâmetros Ósseos</h2>
+<!-- STEP 4 DIAMETROS -->
+<div class="card"><small>Diâmetros ósseos: Utilizados para cálculo de estrutura corporal e somatotipo.</small></div>
+<div class="step">
+<div class="card">
 <input id="femur" placeholder="Fêmur">
 <input id="punho" placeholder="Punho">
 <input id="umero" placeholder="Úmero">
 <input id="tornozelo" placeholder="Tornozelo">
+</div>
+<button class="btn-back" onclick="back()">Voltar</button>
+<button class="btn-next" onclick="calc()">Finalizar</button>
+</div>
 
-<button onclick="calcular()">Calcular Completo</button>
-<button onclick="window.print()">Imprimir / PDF</button>
+<!-- RESULTADO -->
+<div class="card"><small>Resultado Final: Apresentação completa dos dados calculados, composição corporal, risco e recomendações.</small></div>
+<div class="step">
+<div class="card">
+<div id="res"></div>
+<canvas id="grafico"></canvas>
+</div>
+<button onclick="window.print()">Gerar PDF</button>
+<button class="btn-back" onclick="back()">Voltar</button>
+</div>
 
-<div id="resultado" class="result"></div>
-<canvas id="graficoLinha"></canvas>
-<canvas id="graficoColuna"></canvas>
 </div>
 
 <script>
-let hist = JSON.parse(localStorage.getItem('hist')||'[]');
-function v(id){return parseFloat(document.getElementById(id).value)||0}
-function preview(input,id){let r=new FileReader();r.onload=e=>document.getElementById(id).src=e.target.result;r.readAsDataURL(input.files[0]);}
+let lang='pt';
 
-function classIMC(imc){
- if(imc<18.5) return 'Abaixo do peso';
- if(imc<25) return 'Normal';
- if(imc<30) return 'Sobrepeso';
- if(imc<35) return 'Obesidade I';
- if(imc<40) return 'Obesidade II';
- return 'Obesidade III';
-}
-
-function classGordura(p,sexo){
- if(sexo==='M'){
-  if(p<8) return 'Excelente'; if(p<15) return 'Bom'; if(p<20) return 'Médio'; if(p<25) return 'Regular'; return 'Ruim';
- }else{
-  if(p<15) return 'Excelente'; if(p<22) return 'Bom'; if(p<28) return 'Médio'; if(p<33) return 'Regular'; return 'Ruim';
- }
-}
-
-function idealGordura(sexo,idade){
- if(sexo==='M') return idade<30?'10–15%':(idade<50?'12–18%':'14–22%');
- return idade<30?'18–25%':(idade<50?'20–28%':'22–32%');
-}
-
-// Peso ideal (Devine)
-// Peso ideal baseado no percentual de gordura (JP7)
-function pesoIdeal(peso, gorduraAtual, gorduraIdealMedia){
- let massaMagra = peso * (1 - gorduraAtual/100);
- let pesoIdealCalc = massaMagra / (1 - gorduraIdealMedia/100);
- return pesoIdealCalc;
-}
-
-function calcular(){
- let peso=v('peso'),altura=v('altura'),idade=v('idade');
-
- // Correção: evitar divisão por zero
- if(altura <= 0){
-  alert('Informe altura válida');
-  return;
- }
- let sexo=document.getElementById('sexo').value;
-
- // IMC
- let imc=peso/(altura*altura);
- let imcClass=classIMC(imc);
- // média da faixa ideal
-let faixa = ideal.split('–');
-let gorduraIdealMedia = (parseFloat(faixa[0]) + parseFloat(faixa[1]))/2;
-let pesoIdealCalc = pesoIdeal(peso, gordura, gorduraIdealMedia);
-
- // JP7 (18–61 anos)
- let soma=v('triceps')+v('subescapular')+v('supra')+v('peitoral')+v('axilar')+v('abdomen')+v('coxa');
- let dens= sexo==='M'
-  ?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*idade)
-  :1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*idade);
- let gordura=(495/dens)-450;
- let classG=classGordura(gordura,sexo);
- let ideal=idealGordura(sexo,idade);
-
- // Componentes de peso
- let pesoGordura=peso*(gordura/100);
- let pesoMagro=peso-pesoGordura;
- let pesoOsseo=peso*0.15;
- let pesoResidual=peso*0.10;
- let pesoMuscular=pesoMagro - pesoOsseo - pesoResidual;
-
- // Histórico
- hist.push(gordura);
- localStorage.setItem('hist',JSON.stringify(hist));
-
- // Análise de peso ideal
-let pesoMin = pesoIdealCalc * 0.9;
-let pesoMax = pesoIdealCalc * 1.1;
-let diferenca = peso - pesoIdealCalc;
-let ajuste = diferenca > 0 ? `Reduzir ${Math.abs(diferenca).toFixed(2)} kg` : `Ganhar ${Math.abs(diferenca).toFixed(2)} kg`;
-let adequacao = (peso / pesoIdealCalc) * 100;
-let recomendacao = '';
-
-if(adequacao < 90){
- recomendacao = 'Abaixo do ideal: foco em ganho de massa e fortalecimento';
-}else if(adequacao <= 110){
- recomendacao = 'Dentro do ideal: manter e otimizar composição corporal';
-}else{
- recomendacao = 'Acima do ideal: foco em redução de gordura e condicionamento';
-}
-
-// Saída
- let res=`IMC: ${imc.toFixed(2)} (${imcClass})
-`+
- `Peso ideal estimado (baseado na gordura ideal): ${pesoIdealCalc.toFixed(2)} kg
-`+
- `Peso ideal estimado: ${pesoIdealCalc.toFixed(2)} kg\n`+
- `Gordura (JP7): ${gordura.toFixed(2)}% (${classG})\n`+
- `Faixa ideal: ${ideal}\n`+
- `Peso total: ${peso.toFixed(2)} kg\n`+
- `Peso gordura: ${pesoGordura.toFixed(2)} kg\n`+
- `Peso muscular: ${pesoMuscular.toFixed(2)} kg\n`+
- `Peso ósseo: ${pesoOsseo.toFixed(2)} kg\n`+
- `Peso residual: ${pesoResidual.toFixed(2)} kg`;
- res += `
-Faixa de peso ideal: ${pesoMin.toFixed(2)} kg - ${pesoMax.toFixed(2)} kg`+
-`
-Ajuste necessário: ${ajuste}`+
-`
-Adequação ao ideal: ${adequacao.toFixed(1)}%`+
-`
-Recomendação: ${recomendacao}`;
-
-document.getElementById('resultado').innerText=res;
-
- // Gráfico linha (evolução)
- new Chart(document.getElementById('graficoLinha'),{
-  type:'line',
-  data:{labels:hist.map((_,i)=>i+1),datasets:[{label:'% Gordura',data:hist}]}
- });
-
- // Gráfico colunas com cores
- new Chart(document.getElementById('graficoColuna'),{
-  options:{
-    plugins:{
-      tooltip:{enabled:true},
-      legend:{display:true}
-    }
+function setLang(l){
+ lang=l;
+ const map={
+  pt:{
+   nome:'Nome completo',idade:'Idade',peso:'Peso',altura:'Altura',
+   objetivo:['Emagrecer','Hipertrofia','Condicionamento','Saúde'],
   },
-  plugins:[{
-    id:'labelsTopo',
-    afterDatasetsDraw(chart){
-      const {ctx} = chart;
-      chart.data.datasets.forEach((dataset,i)=>{
-        const meta = chart.getDatasetMeta(i);
-        meta.data.forEach((bar,index)=>{
-          const value = dataset.data[index];
-          ctx.fillStyle = '#000';
-          ctx.font = '12px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(value.toFixed(1), bar.x, bar.y - 5);
-        });
-      });
-    }
-  }],
-  type:'bar',
-  data:{
-    labels:['Total','Gordura','Muscular','Ósseo','Residual'],
-    datasets:[{
-      label:'Composição (kg)',
-      data:[peso,pesoGordura,pesoMuscular,pesoOsseo,pesoResidual],
-      backgroundColor:['#a78bfa','#ef4444','#22c55e','#3b82f6','#f59e0b']
-    }]
+  en:{
+   nome:'Full name',idade:'Age',peso:'Weight',altura:'Height',
+   objetivo:['Weight loss','Hypertrophy','Conditioning','Health'],
+  }
+ };
+
+ document.getElementById('nome').placeholder=map[l].nome;
+ document.getElementById('idade').placeholder=map[l].idade;
+ document.getElementById('peso').placeholder=map[l].peso;
+ document.getElementById('altura').placeholder=map[l].altura;
+
+ let obj=document.getElementById('objetivo');
+ for(let i=0;i<obj.options.length;i++){
+  obj.options[i].text=map[l].objetivo[i];
+ }
+
+ // traduz textos fixos
+ document.querySelectorAll('small').forEach(el=>{
+  if(l==='en'){
+   el.innerText=el.innerText
+    .replace('Cadastro','Registration')
+    .replace('Anamnese','Assessment')
+    .replace('Avaliação Postural','Postural Assessment')
+    .replace('Circunferências','Circumferences')
+    .replace('Dobras cutâneas','Skinfolds')
+    .replace('Diâmetros ósseos','Bone diameters')
+    .replace('Resultado Final','Final Result');
+  }else{
+   location.reload();
   }
  });
 }
+
+let step=0,total=6,hist=JSON.parse(localStorage.getItem('hist')||'[]');
+function show(){document.querySelectorAll('.step').forEach((e,i)=>e.classList.toggle('active',i===step));bar.style.width=(step/(total-1))*100+'%'}
+function next(){if(step<total-1){step++;show()}}
+function back(){if(step>0){step--;show()}}
+
+function calc(){
+ let p=+peso.value||0,a=+altura.value||0,i=+idade.value||0,s=sexo.value;
+ let imc=p/(a*a);
+ let rcq=(+cintura.value)/(+quadril.value);
+
+ let soma=+triceps.value+ +subescapular.value+ +supra.value+ +peitoral.value+ +axilar.value+ +abdomen.value+ +coxa.value;
+ let dens=s==='M'?1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*i):1.097-(0.00046971*soma)+(0.00000056*soma*soma)-(0.00012828*i);
+ let gordura=(495/dens)-450;
+
+ let gorduraKg=p*(gordura/100);
+ let massaMagra=p-gorduraKg;
+ let osseo=p*0.15;
+ let residual=p*0.1;
+ let muscular=massaMagra-osseo-residual;
+
+ let pesoIdeal=massaMagra/(1-0.18);
+ let faixaMin=pesoIdeal*0.9,faixaMax=pesoIdeal*1.1;
+ let adequacao=(p/pesoIdeal)*100;
+
+ let endo=-0.7182+0.1451*(+triceps.value+ +subescapular.value+ +supra.value);
+ let meso=(0.858*+umero.value)+(0.601*+femur.value)+(0.188*+bracoD.value)+(0.161*+pantD.value)-0.131*(a*100)+4.5;
+ let ecto=(a*100)/Math.cbrt(p)>40?0.732*((a*100)/Math.cbrt(p))-28.58:0.1;
+
+ hist.push(gordura);
+ localStorage.setItem('hist',JSON.stringify(hist));
+
+ res.innerText=
+ `IMC: ${imc.toFixed(2)}\nRCQ: ${rcq.toFixed(2)}\n% Gordura: ${gordura.toFixed(2)}\nPeso ideal: ${pesoIdeal.toFixed(2)}kg\nFaixa: ${faixaMin.toFixed(2)}-${faixaMax.toFixed(2)}\nAdequação: ${adequacao.toFixed(1)}%\nMuscular: ${muscular.toFixed(2)}kg\nÓsseo: ${osseo.toFixed(2)}kg\nResidual: ${residual.toFixed(2)}kg\nSomatotipo: Endo ${endo.toFixed(2)} | Meso ${meso.toFixed(2)} | Ecto ${ecto.toFixed(2)}`;
+
+ new Chart(grafico,{type:'bar',data:{labels:['Total','Gordura','Muscular','Ósseo','Residual'],datasets:[{data:[p,gorduraKg,muscular,osseo,residual]}]}});
+
+ next();
+}
+
+function gerarLaudoPostural(){
+ let texto="Análise Postural:
+";
+ if(cabeca.value!=="Cabeça alinhada") texto+="Desvio de cabeça identificado.
+";
+ if(ombros.value!=="Ombros alinhados") texto+="Desnível de ombros.
+";
+ if(pelve.value!=="Pelve alinhada") texto+="Alteração pélvica.
+";
+ if(cabecaLat.value!=="Postura normal") texto+="Cabeça anteriorizada.
+";
+ if(coluna.value!=="Coluna normal") texto+="Alteração na curvatura da coluna.
+";
+ if(escapula.value!=="Escápulas simétricas") texto+="Assimetria escapular.
+";
+ if(colunaPost.value!=="Coluna alinhada") texto+="Possível escoliose.
+";
+ texto+="
+Recomendação:
+Treino corretivo, mobilidade e fortalecimento postural.";
+ document.getElementById('laudoPostural').innerText=texto;
+}
+
+show();
 </script>
+
 </body>
 </html>
