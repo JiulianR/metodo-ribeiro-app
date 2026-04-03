@@ -1,245 +1,357 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Método Ribeiro Elite CLÍNICO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método Ribeiro - Elite Clínica ULTIMATE V22</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        *{box-sizing:border-box; -webkit-print-color-adjust: exact;}
+        body{margin:0;font-family:'Segoe UI',Arial;background:#0b0f1a;color:#fff;overflow-x:hidden}
+        .container{max-width:850px;margin:auto;padding:15px}
+        .step{display:none}
+        .step.active{display:block}
+        .card{background:#111827;padding:20px;border-radius:16px;margin-bottom:15px;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+        input,select,textarea{width:100%;padding:10px;margin:5px 0;border:none;border-radius:8px;background:#1f2937;color:#fff;font-size:13px}
+        input:focus{outline:2px solid #7c3aed}
+        .row{display:flex;gap:10px;flex-wrap:wrap}
+        .row > div{flex:1;min-width:140px}
+        h3{color:#c4b5fd;border-bottom:1px solid #374151;padding-bottom:8px;margin-bottom:12px}
+        button{width:100%;padding:14px;border:none;border-radius:12px;margin-top:10px;background:#7c3aed;color:#fff;font-weight:bold;cursor:pointer}
+        .btn-prev{background:#374151}
+        .progress{height:6px;background:#222;border-radius:10px;margin-bottom:20px}
+        .bar{height:6px;background:#7c3aed;width:0%;transition:width 0.3s}
+        .date-container { position: relative; display: flex; align-items: center; }
+        .date-container input[type="date"] { position: absolute; right: 5px; width: 35px; opacity: 0; cursor: pointer; }
+        .photo-preview{display:grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap:10px; margin-top:10px;}
+        .photo-preview img{width:100%; height:80px; object-fit:cover; border-radius:8px; border:2px solid #7c3aed}
+        .laudo-ia {background: #1e1b4b; border: 1px solid #7c3aed; padding: 15px; border-radius: 10px; font-size: 13px; color: #e9d5ff; margin-top: 10px;}
+        .db-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;}
+        .db-card {background: #1f2937; padding: 15px; border-radius: 12px; text-align: center; border-bottom: 3px solid #7c3aed;}
+        .db-val {display: block; font-size: 20px; font-weight: bold; color: #a78bfa;}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-body{margin:0;font-family:Arial;background:#0b0f1a;color:#fff}
-.container{max-width:520px;margin:auto;padding:15px}
-.step{display:none}
-.step.active{display:block}
-.card{background:#111827;padding:15px;border-radius:12px;margin-bottom:10px}
-input,select,textarea{width:100%;padding:10px;margin:5px 0;border:none;border-radius:8px;background:#1f2937;color:#fff}
-button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:10px;background:#7c3aed;color:#fff}
-.progress{height:5px;background:#222;border-radius:10px;margin-bottom:10px}
-.bar{height:5px;background:#7c3aed;width:0%}
-</style>
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            .no-print { display: none !important; }
+            #print-report { display: block !important; }
+            .page { page-break-after: always; min-height: 285mm; padding: 25px; color: #000; }
+            h1, h2, h3 { color: #7c3aed !important; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 10px; color: #000; }
+            th, td { border: 1px solid #ddd; padding: 5px; text-align: left; }
+            th { background: #f3f4f6; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="container no-print">
+    <div class="progress"><div id="bar" class="bar"></div></div>
 
-<div class="progress"><div id="bar" class="bar"></div></div>
+    <!-- PASSO 0: HOME -->
+    <div class="step active">
+        <div class="card" style="text-align:center; padding:50px 20px">
+            <h1 style="font-size:40px; color:#c4b5fd">🏋️ Método Ribeiro</h1>
+            <p>Elite Clínica - Sistema Antropométrico Restaurado</p>
+            <button onclick="next()">Iniciar Avaliação Profissional</button>
+        </div>
+    </div>
 
-<!-- HOME -->
-<div class="step active">
-<div class="card" style="height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:url('https://img.freepik.com/fotos-gratis/mulher-ajudando-homem-na-academia_30893602.jpg') center/cover">
-<h2 style="background:rgba(0,0,0,0.6);padding:10px;border-radius:10px">Método Ribeiro</h2>
-<button onclick="start()">Iniciar Avaliação</button>
-</div>
-</div>
+    <!-- PASSO 1: CADASTRO -->
+    <div class="step">
+        <div class="card">
+            <h3>📋 Passo 1: Cadastro</h3>
+            <input id="nome" placeholder="Nome Completo *" oninput="document.getElementById('nome_aval').value = this.value">
+            <div class="date-container">
+                <input id="dataNascText" type="text" placeholder="Data de Nascimento (DD/MM/AAAA)" maxlength="10">
+                <input id="dataNascPicker" type="date" onchange="syncDataPicker(this.value)">
+            </div>
+            <div class="row">
+                <input id="telefone" placeholder="Telefone / WhatsApp">
+                <select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
+            </div>
+            <div class="row"><input id="cidade" placeholder="Cidade"><input id="estado" placeholder="UF"></div>
+        </div>
+        <button onclick="next()">Próximo</button>
+    </div>
 
-<!-- CADASTRO -->
-<div class="step">
-<div class="card">
-<h3>Cadastro</h3>
-<input id="nome" placeholder="Nome">
-<input id="idade" placeholder="Idade">
-<input id="peso" placeholder="Peso">
-<input id="altura" placeholder="Altura">
-<select id="sexo"><option value="M">Masculino</option><option value="F">Feminino</option></select>
-</div>
-<button onclick="next()">Próximo</button>
-</div>
+    <!-- PASSO 2: DADOS FÍSICOS -->
+    <div class="step">
+        <div class="card">
+            <h3>📊 Passo 2: Dados de Base</h3>
+            <div class="row">
+                <div style="flex:2"><input id="nome_aval" placeholder="Nome do Avaliado" readonly style="background: #111827; color: #7c3aed; font-weight: bold;"></div>
+                <div style="flex:1"><label style="font-size:11px; color:#7c3aed">Data da Avaliação:</label><input id="data_hoje" type="text" readonly style="background: #111827; font-weight: bold;"></div>
+            </div>
+            <div class="row">
+                <input id="idade" type="number" placeholder="Idade (Auto)" readonly style="background: #1b2433;">
+                <input id="peso" type="number" step="0.1" placeholder="Peso (kg) *">
+                <input id="altura" type="number" placeholder="Altura (cm) *">
+            </div>
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+    </div>
 
-<!-- ANAMNESE -->
-<div class="step">
-<div class="card">
-<h3>Anamnese Completa</h3>
+    <!-- PASSO 3: ANAMNESE -->
+    <div class="step">
+        <div class="card">
+            <h3>📝 Passo 3: Anamnese (10 Perguntas)</h3>
+            <div class="row">
+                <select id="nivel_treino"><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select>
+                <select id="freq_treino"><option>1x</option><option>2x</option><option>3x</option><option>4x</option><option>5x</option><option>6x</option><option>7x</option></select>
+            </div>
+            <textarea id="q1" placeholder="1. Histórico de doenças/medicamentos"></textarea>
+            <textarea id="q2" placeholder="2. Lesões ou cirurgias passadas"></textarea>
+            <textarea id="q3" placeholder="3. Histórico familiar relevante"></textarea>
+            <textarea id="q4" placeholder="4. Qualidade do sono e estresse"></textarea>
+            <textarea id="q5" placeholder="5. Hábitos alimentares e vícios"></textarea>
+            <textarea id="q6" placeholder="6. Nível de dor atual (0 a 10)"></textarea>
+            <textarea id="q7" placeholder="7. Suplementação em uso"></textarea>
+            <textarea id="q8" placeholder="8. Tempo de prática esportiva"></textarea>
+            <textarea id="q9" placeholder="9. Limitações físicas conhecidas"></textarea>
+            <textarea id="q10" placeholder="10. O REAL OBJETIVO detalhado *"></textarea>
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+    </div>
 
-<select><option>Objetivo: Emagrecer</option><option>Hipertrofia</option><option>Saúde</option></select>
-<select><option>Dor: Nenhuma</option><option>Leve</option><option>Moderada</option><option>Alta</option></select>
+    <!-- PASSO 4: POSTURAL -->
+    <div class="step">
+        <div class="card">
+            <h3>📸 Passo 4: Avaliação Postural</h3>
+            <input type="file" id="fotosInput" multiple accept="image/*" capture="environment" onchange="handleFotos(event)">
+            <div id="preview" class="photo-preview"></div>
+            <div class="row" style="margin-top:15px">
+                <select id="p_cabeca" onchange="gerarLaudoIA()"><option value="alinhada">Cabeça: Alinhada</option><option value="protusa">Cabeça: Protusa</option></select>
+                <select id="p_ombros" onchange="gerarLaudoIA()"><option value="alinhados">Ombros: Alinhados</option><option value="protusos">Ombros: Protusos</option></select>
+                <select id="p_coluna" onchange="gerarLaudoIA()"><option value="normal">Coluna: Normal</option><option value="escoliose">Coluna: Escoliose</option></select>
+            </div>
+            <div id="laudoIA" class="laudo-ia">Aguardando seleções...</div>
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+    </div>
 
-<textarea placeholder="1. Histórico de doenças"></textarea>
-<textarea placeholder="2. Lesões"></textarea>
-<textarea placeholder="3. Medicamentos"></textarea>
-<textarea placeholder="4. Cirurgias"></textarea>
-<textarea placeholder="5. Histórico familiar"></textarea>
+    <!-- PASSO 5: PERÍMETROS -->
+    <div class="step">
+        <div class="card">
+            <h3>📏 Passo 5: Perímetros Completos (cm)</h3>
+            <div class="row">
+                <input id="c_pescoco" placeholder="Pescoço">
+                <input id="c_ombro" placeholder="Ombros">
+                <input id="c_peito" placeholder="Peitoral">
+            </div>
+            <div class="row">
+                <input id="c_cintura" placeholder="Cintura">
+                <input id="c_abd" placeholder="Abdômen">
+                <input id="c_quadril" placeholder="Quadril">
+            </div>
+            <div class="row">
+                <input id="c_bracoD" placeholder="Braço D">
+                <input id="c_bracoE" placeholder="Braço E">
+                <input id="c_anteD" placeholder="Antebraço D">
+                <input id="c_anteE" placeholder="Antebraço E">
+            </div>
+            <div class="row">
+                <input id="c_coxaD" placeholder="Coxa D">
+                <input id="c_coxaE" placeholder="Coxa E">
+                <input id="c_pantD" placeholder="Panturrilha D">
+                <input id="c_pantE" placeholder="Panturrilha E">
+            </div>
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+    </div>
 
-<select>
-<option>6. Frequência treino 1x</option>
-<option>2x</option><option>3x</option><option>4x</option><option>5x</option><option>6x</option><option>7x</option>
-</select>
+    <!-- PASSO 6: DOBRAS CORRIGIDO -->
+    <div class="step">
+        <div class="card">
+            <h3>🩺 Passo 6: Dobras Cutâneas (mm)</h3>
+            <label style="font-size:12px; color:#c4b5fd">Protocolo para Cálculo de Gordura:</label>
+            <select id="protocolo_selecionado">
+                <option value="pollock7">Jackson & Pollock (7 Dobras)</option>
+                <option value="pollock3">Jackson & Pollock (3 Dobras)</option>
+                <option value="guedes">Guedes (3 Dobras)</option>
+                <option value="durnin">Durnin & Womersley (4 Dobras)</option>
+                <option value="petroski">Petroski (4 Dobras)</option>
+                <option value="deurenberg">Deurenberg (IMC)</option>
+            </select>
+            <div class="row">
+                <input id="d_tri" placeholder="Tríceps">
+                <input id="d_bi" placeholder="Bíceps">
+                <input id="d_sub" placeholder="Subescapular">
+                <input id="d_pei" placeholder="Peitoral">
+            </div>
+            <div class="row">
+                <input id="d_axi" placeholder="Axilar Média">
+                <input id="d_sup" placeholder="Supra-ilíaca">
+                <input id="d_abd" placeholder="Abdominal">
+                <input id="d_coxa" placeholder="Coxa">
+            </div>
+            <input id="d_pant" placeholder="Panturrilha">
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+    </div>
 
-<select>
-<option>7. Nível iniciante</option>
-<option>Intermediário</option>
-<option>Avançado</option>
-</select>
+    <!-- PASSO 7: DIÂMETROS -->
+    <div class="step">
+        <div class="card">
+            <h3>🦴 Passo 7: Diâmetros Ósseos (cm)</h3>
+            <div class="row">
+                <input id="dia_pulso" placeholder="Biestiloide (Pulso)">
+                <input id="dia_umero" placeholder="Biepicondilar (Úmero)">
+                <input id="dia_femur" placeholder="Bicondiliano (Fêmur)">
+                <input id="dia_torno" placeholder="Bimaleolar (Tornozelo)">
+            </div>
+        </div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="finalizarTudo()">Finalizar e Calcular</button></div>
+    </div>
 
-<textarea placeholder="8. Objetivo detalhado"></textarea>
-<textarea placeholder="9. Limitações"></textarea>
-<textarea placeholder="10. Observações gerais"></textarea>
-
-</div>
-<button onclick="next()">Próximo</button>
-</div>
-
-<!-- POSTURAL -->
-<div class="step">
-<div class="card">
-<h3>Avaliação Postural (até 5 fotos)</h3>
-
-<input type="file">
-<input type="file">
-<input type="file">
-<input type="file">
-<input type="file">
-
-<select id="cabeca"><option>Alinhada</option><option>Desvio</option></select>
-<select id="ombro"><option>Alinhado</option><option>Desnível</option></select>
-<select id="coluna"><option>Normal</option><option>Alterada</option></select>
-
-<button onclick="laudoPostural()">Gerar Laudo</button>
-<div id="laudo"></div>
-
-</div>
-<button onclick="next()">Próximo</button>
-</div>
-
-<!-- CIRCUNFERÊNCIAS -->
-<div class="step">
-<div class="card">
-<h3>Circunferências</h3>
-
-<input id="cintura" placeholder="Cintura">
-<input id="quadril" placeholder="Quadril">
-<input placeholder="Peitoral">
-<input placeholder="Ombros">
-<input placeholder="Pescoço">
-
-<input id="pantD" placeholder="Panturrilha D">
-<input placeholder="Panturrilha E">
-<input id="coxa" placeholder="Coxa">
-<input placeholder="Coxa E">
-
-<input id="braco" placeholder="Braço D">
-<input placeholder="Braço E">
-
-<input placeholder="Antebraço D">
-<input placeholder="Antebraço E">
-
-</div>
-<button onclick="next()">Próximo</button>
-</div>
-
-<!-- DOBRAS -->
-<div class="step">
-<div class="card">
-<h3>Dobras Cutâneas</h3>
-
-<input id="triceps" placeholder="Tríceps">
-<input placeholder="Bíceps">
-<input id="subescapular" placeholder="Subescapular">
-<input id="supra" placeholder="Supra-ilíaca">
-<input placeholder="Peitoral">
-<input placeholder="Axilar">
-<input id="abdomen" placeholder="Abdômen">
-<input id="coxaD" placeholder="Coxa">
-<input placeholder="Panturrilha">
-
-</div>
-<button onclick="next()">Próximo</button>
-</div>
-
-<!-- DIÂMETROS -->
-<div class="step">
-<div class="card">
-<h3>Diâmetros Ósseos</h3>
-
-<input id="femur" placeholder="Fêmur">
-<input id="umero" placeholder="Úmero">
-<input placeholder="Punho">
-<input placeholder="Tornozelo">
-
-</div>
-<button onclick="calc()">Finalizar</button>
-</div>
-
-<!-- RESULTADO -->
-<div class="step">
-<div class="card">
-<h3>Resultado</h3>
-<div id="res"></div>
-<canvas id="grafico"></canvas>
-</div>
-</div>
-
+    <!-- PASSO 8: DASHBOARD -->
+    <div class="step">
+        <div class="card">
+            <h3>🏆 Passo 8: Resultados Elite</h3>
+            <div class="db-grid">
+                <div class="db-card"><span class="res-lab">% Gordura</span><span class="db-val" id="db_fat">--</span></div>
+                <div class="db-card"><span class="res-lab">Massa Muscular</span><span class="db-val" id="db_mus">--</span></div>
+                <div class="db-card"><span class="res-lab">Massa Óssea</span><span class="db-val" id="db_oss">--</span></div>
+                <div class="db-card"><span class="res-lab">IMC / RCQ</span><span class="db-val" id="db_ind">--</span></div>
+            </div>
+            <div class="row">
+                <div style="flex:1; background: #1f2937; padding: 10px; border-radius: 12px;"><canvas id="c_bar_tela"></canvas></div>
+                <div style="flex:1; background: #1f2937; padding: 10px; border-radius: 12px;"><canvas id="c_rad_tela"></canvas></div>
+            </div>
+            <button onclick="window.print()" style="background:#059669; font-size:18px">IMPRIMIR RELATÓRIO PDF</button>
+            <button class="btn-prev" onclick="prev()">Corrigir Medidas</button>
+        </div>
+    </div>
 </div>
 
 <script>
+    let currentStep = 0;
+    const steps = document.querySelectorAll(".step");
+    let fotosBase64 = [];
+    let chartBar, chartRadar;
 
-let step=0
-const bar=document.getElementById('bar')
+    window.onload = function() {
+        document.getElementById('data_hoje').value = new Date().toLocaleDateString('pt-BR');
+    }
 
-function show(){
- let steps=document.querySelectorAll('.step')
- steps.forEach((e,i)=>e.classList.toggle('active',i===step))
- bar.style.width=(step/(steps.length-1))*100+'%'
-}
+    function showStep(n) {
+        steps.forEach((s, i) => s.classList.toggle("active", i === n));
+        document.getElementById("bar").style.width = ((n / (steps.length - 1)) * 100) + "%";
+        window.scrollTo(0,0);
+    }
+    function next() { currentStep++; showStep(currentStep); }
+    function prev() { currentStep--; showStep(currentStep); }
 
-function start(){
- step=1
- show()
-}
+    const dataTxt = document.getElementById('dataNascText');
+    dataTxt.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, "");
+        if (v.length >= 8) {
+            v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
+            e.target.value = v;
+            calcIdade(v);
+        }
+    });
 
-function next(){
- let steps=document.querySelectorAll('.step')
- if(step<steps.length-1){step++;show()}
-}
+    function syncDataPicker(val) {
+        const p = val.split('-');
+        const f = `${p[2]}/${p[1]}/${p[0]}`;
+        dataTxt.value = f;
+        calcIdade(f);
+    }
 
-function calc(){
+    function calcIdade(d) {
+        const p = d.split('/');
+        const nasc = new Date(p[2], p[1]-1, p[0]);
+        let idade = new Date().getFullYear() - nasc.getFullYear();
+        if(new Date() < new Date(new Date().getFullYear(), p[1]-1, p[0])) idade--;
+        if(!isNaN(idade)) document.getElementById('idade').value = idade;
+    }
 
- let p=+peso.value
- let a=+altura.value
- let i=+idade.value
+    function handleFotos(e) {
+        const files = e.target.files;
+        Array.from(files).forEach(f => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = document.createElement('img'); img.src = ev.target.result;
+                document.getElementById('preview').appendChild(img);
+                fotosBase64.push(ev.target.result);
+            };
+            reader.readAsDataURL(f);
+        });
+    }
 
- let imc=p/(a*a)
- let rcq=(+cintura.value)/(+quadril.value)
+    function gerarLaudoIA() {
+        const c = document.getElementById('p_cabeca').value;
+        const o = document.getElementById('p_ombros').value;
+        const col = document.getElementById('p_coluna').value;
+        document.getElementById('laudoIA').innerText = `Parecer Biomecânico: Cabeça ${c}, Ombros ${o} e Coluna ${col}. Sugere-se protocolo de correção.`;
+    }
 
- let soma=+triceps.value+ +subescapular.value+ +supra.value+ +abdomen.value+ +coxaD.value
- let dens=1.112-(0.00043499*soma)+(0.00000055*soma*soma)-(0.00028826*i)
- let gordura=(495/dens)-450
+    function finalizarTudo() {
+        const d = (id) => document.getElementById(id).value;
+        const peso = parseFloat(d('peso')) || 0;
+        const alturaM = (parseFloat(d('altura')) || 0) / 100;
+        const idade = parseInt(d('idade')) || 0;
+        const sexo = d('sexo');
+        const prot = d('protocolo_selecionado');
 
- let gorduraKg=p*(gordura/100)
- let massa=p-gorduraKg
+        // Dobras
+        const tri = parseFloat(d('d_tri')) || 0;
+        const sub = parseFloat(d('d_sub')) || 0;
+        const sup = parseFloat(d('d_sup')) || 0;
+        const abd = parseFloat(d('d_abd')) || 0;
+        const pei = parseFloat(d('d_pei')) || 0;
+        const axi = parseFloat(d('d_axi')) || 0;
+        const cox = parseFloat(d('d_coxa')) || 0;
+        const bi = parseFloat(d('d_bi')) || 0;
+        const pant = parseFloat(d('d_pant')) || 0;
 
- let pesoIdeal=massa/(1-0.18)
+        let fat = 0, dens = 0;
 
- res.innerText=
-`IMC: ${imc.toFixed(2)}
-RCQ: ${rcq.toFixed(2)}
-Gordura: ${gordura.toFixed(2)}%
-Peso ideal: ${pesoIdeal.toFixed(2)} kg`
+        // Lógica de Protocolos
+        if(prot === 'pollock7') {
+            const s7 = tri+sub+sup+abd+pei+axi+cox;
+            dens = (sexo==='M') ? 1.112-0.00043499*s7+0.00000055*s7**2-0.00028826*idade : 1.097-0.00046971*s7+0.00000056*s7**2-0.00012828*idade;
+            fat = ((4.95/dens)-4.5)*100;
+        } else if(prot === 'pollock3') {
+            const s3 = (sexo==='M') ? pei+abd+cox : tri+sup+cox;
+            dens = (sexo==='M') ? 1.10938-0.0008267*s3+0.0000016*s3**2-0.0002574*idade : 1.0994921-0.0009929*s3+0.0000023*s3**2-0.0001392*idade;
+            fat = ((4.95/dens)-4.5)*100;
+        } else if(prot === 'deurenberg') {
+            fat = (1.20*(peso/alturaM**2))+(0.23*idade)-(sexo==='M'?16.2:5.4);
+        } else if(prot === 'durnin') {
+            const s4 = tri+bi+sub+sup;
+            dens = (sexo==='M') ? 1.1631-0.0632*Math.log10(s4) : 1.1599-0.0717*Math.log10(s4);
+            fat = ((4.95/dens)-4.5)*100;
+        } else {
+            fat = (1.20*(peso/alturaM**2))+(0.23*idade)-(sexo==='M'?16.2:5.4); // Fallback
+        }
 
- new Chart(grafico,{
- type:'bar',
- data:{labels:['Peso','Gordura','Massa Magra'],
- datasets:[{data:[p,gorduraKg,massa]}]}
- })
+        // Massas Drinkwater/Matiegka
+        const mGorda = peso * (fat/100);
+        const mOssea = Math.pow(alturaM, 2) * (parseFloat(d('dia_pulso'))/100 || 0.06) * (parseFloat(d('dia_femur'))/100 || 0.09) * 400 * 0.06;
+        const mRes = peso * (sexo==='M'?0.241:0.209);
+        const mMusc = peso - (mGorda + mOssea + mRes);
 
- next()
-}
+        // Somatotipo
+        const endo = -0.7182 + (0.1451*(tri+sub+sup)) - (0.00068*Math.pow(tri+sub+sup, 2));
+        const meso = (0.858*parseFloat(d('dia_umero')||6)) + (0.601*parseFloat(d('dia_femur')||9)) - (0.131*alturaM*100) + 4.5;
+        const ecto = (alturaM*100/Math.pow(peso,1/3))*0.732 - 28.58;
 
-function laudoPostural(){
- let texto="Postura analisada:\n"
- if(cabeca.value!="Alinhada") texto+="Desvio de cabeça\n"
- if(ombro.value!="Alinhado") texto+="Desnível de ombros\n"
- if(coluna.value!="Normal") texto+="Alteração de coluna\n"
+        document.getElementById('db_fat').innerText = fat.toFixed(1) + "%";
+        document.getElementById('db_mus').innerText = mMusc.toFixed(1) + "kg";
+        document.getElementById('db_oss').innerText = mOssea.toFixed(1) + "kg";
+        document.getElementById('db_ind').innerText = (peso/alturaM**2).toFixed(1) + " / " + (parseFloat(d('c_cintura'))/parseFloat(d('c_quadril'))||0).toFixed(2);
 
- texto+="Recomendação: treino corretivo"
+        renderDashboard(mMusc, mGorda, mOssea, endo, meso, ecto);
+        next();
+    }
 
- document.getElementById('laudo').innerText=texto
-}
-
-show()
-
+    function renderDashboard(mu, go, os, e, m, ec) {
+        if(chartBar) chartBar.destroy(); if(chartRadar) chartRadar.destroy();
+        chartBar = new Chart(document.getElementById('c_bar_tela'), { type:'bar', data:{labels:['Musc','Gord','Oss'], datasets:[{data:[mu,go,os], backgroundColor:['#7c3aed','#ef4444','#f59e0b']}]}, options:{responsive:true, plugins:{legend:{display:false}}}});
+        chartRadar = new Chart(document.getElementById('c_rad_tela'), { type:'radar', data:{labels:['Endo','Meso','Ecto'], datasets:[{data:[e,m,ec], backgroundColor:'rgba(124,58,237,0.3)', borderColor:'#7c3aed'}]}, options:{responsive:true}});
+    }
 </script>
-
 </body>
-</html>
+                 </html>
+                 
