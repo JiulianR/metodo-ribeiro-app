@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Método Ribeiro - Elite Clínica ULTIMATE V22</title>
-    <script src="https://jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         *{box-sizing:border-box; -webkit-print-color-adjust: exact;}
         body{margin:0;font-family:'Segoe UI',Arial;background:#0b0f1a;color:#fff;overflow-x:hidden}
@@ -29,6 +29,11 @@
         .db-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;}
         .db-card {background: #1f2937; padding: 15px; border-radius: 12px; text-align: center; border-bottom: 3px solid #7c3aed;}
         .db-val {display: block; font-size: 20px; font-weight: bold; color: #a78bfa;}
+        .classificacao-box {background: #1e293b; padding: 15px; border-radius: 12px; margin: 15px 0; text-align: center; border-left: 4px solid #f59e0b;}
+        .classificacao-box .atual {font-size: 24px; font-weight: bold;}
+        .classificacao-box .ideal {color: #10b981;}
+        .classificacao-box .ruim {color: #ef4444;}
+        .grafico-duplo {display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;}
 
         @media print {
             body { background: #fff !important; color: #000 !important; }
@@ -51,7 +56,7 @@
     <div class="step active">
         <div class="card" style="text-align:center; padding:50px 20px">
             <h1 style="font-size:40px; color:#c4b5fd">🏋️ Método Ribeiro</h1>
-            <p>Elite Clínica - Sistema Antropométrico Restaurado</p>
+            <p> - Sistema Antropométrico </p>
             <button onclick="next()">Iniciar Avaliação Profissional</button>
         </div>
     </div>
@@ -71,7 +76,7 @@
             </div>
             <div class="row"><input id="cidade" placeholder="Cidade"><input id="estado" placeholder="UF"></div>
         </div>
-        <button onclick="next()">Próximo</button>
+        <button onclick="validarCadastro()">Próximo</button>
     </div>
 
     <!-- PASSO 2: DADOS FÍSICOS -->
@@ -88,7 +93,7 @@
                 <input id="altura" type="number" placeholder="Altura (cm) *">
             </div>
         </div>
-        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
+        <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="validarDadosFisicos()">Próximo</button></div>
     </div>
 
     <!-- PASSO 3: ANAMNESE -->
@@ -139,9 +144,9 @@
                 <input id="c_peito" placeholder="Peitoral">
             </div>
             <div class="row">
-                <input id="c_cintura" placeholder="Cintura">
+                <input id="c_cintura" placeholder="Cintura *">
                 <input id="c_abd" placeholder="Abdômen">
-                <input id="c_quadril" placeholder="Quadril">
+                <input id="c_quadril" placeholder="Quadril *">
             </div>
             <div class="row">
                 <input id="c_bracoD" placeholder="Braço D">
@@ -155,6 +160,7 @@
                 <input id="c_pantD" placeholder="Panturrilha D">
                 <input id="c_pantE" placeholder="Panturrilha E">
             </div>
+            <p style="font-size:12px;color:#9ca3af">* Cintura e Quadril obrigatórios para RCQ</p>
         </div>
         <div class="row"><button class="btn-prev" onclick="prev()">Voltar</button><button onclick="next()">Próximo</button></div>
     </div>
@@ -213,11 +219,26 @@
                 <div class="db-card"><span class="res-lab">Massa Óssea</span><span class="db-val" id="db_oss">--</span></div>
                 <div class="db-card"><span class="res-lab">IMC / RCQ</span><span class="db-val" id="db_ind">--</span></div>
             </div>
-            <div class="row">
-                <div style="flex:1; background: #1f2937; padding: 10px; border-radius: 12px;"><canvas id="c_bar_tela"></canvas></div>
-                <div style="flex:1; background: #1f2937; padding: 10px; border-radius: 12px;"><canvas id="c_rad_tela"></canvas></div>
+            
+            <div id="classificacaoGordura" class="classificacao-box"></div>
+            
+            <div class="grafico-duplo">
+                <div style="background: #1f2937; padding: 10px; border-radius: 12px;">
+                    <h4 style="text-align:center;margin:0 0 10px 0">📊 Composição Corporal</h4>
+                    <canvas id="c_bar_tela"></canvas>
+                </div>
+                <div style="background: #1f2937; padding: 10px; border-radius: 12px;">
+                    <h4 style="text-align:center;margin:0 0 10px 0">🧬 Somatotipo</h4>
+                    <canvas id="c_rad_tela"></canvas>
+                </div>
             </div>
-            <button onclick="window.print()" style="background:#059669; font-size:18px">IMPRIMIR RELATÓRIO PDF</button>
+            
+            <div style="margin-top:15px; background:#1e293b; padding:15px; border-radius:12px">
+                <h4 style="margin:0 0 10px 0">📋 Resumo do Avaliado</h4>
+                <div id="resumoFinal" style="font-size:13px; line-height:1.6"></div>
+            </div>
+            
+            <button onclick="window.print()" style="background:#059669; font-size:18px">🖨️ IMPRIMIR RELATÓRIO PDF</button>
             <button class="btn-prev" onclick="prev()">Corrigir Medidas</button>
         </div>
     </div>
@@ -238,8 +259,52 @@
         document.getElementById("bar").style.width = ((n / (steps.length - 1)) * 100) + "%";
         window.scrollTo(0,0);
     }
-    function next() { currentStep++; showStep(currentStep); }
-    function prev() { currentStep--; showStep(currentStep); }
+    function next() { 
+        if(currentStep < steps.length - 1) {
+            currentStep++; 
+            showStep(currentStep); 
+        }
+    }
+    function prev() { 
+        if(currentStep > 0) {
+            currentStep--; 
+            showStep(currentStep); 
+        }
+    }
+
+    function validarCadastro() {
+        const nome = document.getElementById('nome').value.trim();
+        const dataNasc = document.getElementById('dataNascText').value.trim();
+        if(!nome || !dataNasc) {
+            alert('Preencha Nome e Data de Nascimento!');
+            return;
+        }
+        next();
+    }
+
+    function validarDadosFisicos() {
+        const peso = document.getElementById('peso').value;
+        const altura = document.getElementById('altura').value;
+        if(!peso || !altura) {
+            alert('Preencha Peso e Altura!');
+            return;
+        }
+        next();
+    }
+
+    function getFaixaIdealGordura(idade, sexo) {
+        let idealMin, idealMax, saudavelMin, saudavelMax;
+        if(sexo === 'M') {
+            if(idade <= 30) { idealMin = 10; idealMax = 18; saudavelMin = 8; saudavelMax = 20; }
+            else if(idade <= 50) { idealMin = 12; idealMax = 20; saudavelMin = 10; saudavelMax = 22; }
+            else { idealMin = 14; idealMax = 22; saudavelMin = 12; saudavelMax = 25; }
+        } else {
+            if(idade <= 30) { idealMin = 18; idealMax = 25; saudavelMin = 16; saudavelMax = 28; }
+            else if(idade <= 50) { idealMin = 20; idealMax = 28; saudavelMin = 18; saudavelMax = 30; }
+            else { idealMin = 22; idealMax = 30; saudavelMin = 20; saudavelMax = 33; }
+        }
+        return { idealMin, idealMax, saudavelMin, saudavelMax };
+    }
 
     const dataTxt = document.getElementById('dataNascText');
     dataTxt.addEventListener('input', (e) => {
@@ -252,6 +317,7 @@
     });
 
     function syncDataPicker(val) {
+        if(!val) return;
         const p = val.split('-');
         const f = `${p[2]}/${p[1]}/${p[0]}`;
         dataTxt.value = f;
@@ -260,10 +326,11 @@
 
     function calcIdade(d) {
         const p = d.split('/');
+        if(p.length !== 3) return;
         const nasc = new Date(p[2], p[1]-1, p[0]);
         let idade = new Date().getFullYear() - nasc.getFullYear();
         if(new Date() < new Date(new Date().getFullYear(), p[1]-1, p[0])) idade--;
-        if(!isNaN(idade)) document.getElementById('idade').value = idade;
+        if(!isNaN(idade) && idade > 0) document.getElementById('idade').value = idade;
     }
 
     function handleFotos(e) {
@@ -280,19 +347,30 @@
     }
 
     function gerarLaudoIA() {
-        const c = document.getElementById('p_cabeca').value;
-        const o = document.getElementById('p_ombros').value;
-        const col = document.getElementById('p_coluna').value;
-        document.getElementById('laudoIA').innerText = `Parecer Biomecânico: Cabeça ${c}, Ombros ${o} e Coluna ${col}. Sugere-se protocolo de correção.`;
+        const c = document.getElementById('p_cabeca').options[document.getElementById('p_cabeca').selectedIndex]?.text || "Alinhada";
+        const o = document.getElementById('p_ombros').options[document.getElementById('p_ombros').selectedIndex]?.text || "Alinhados";
+        const col = document.getElementById('p_coluna').options[document.getElementById('p_coluna').selectedIndex]?.text || "Normal";
+        document.getElementById('laudoIA').innerHTML = `🔍 <strong>Parecer Biomecânico:</strong><br> Cabeça: ${c}<br> Ombros: ${o}<br> Coluna: ${col}<br><br>📌 Recomendação: Protocolo de correção postural e fortalecimento do core.`;
     }
 
     function finalizarTudo() {
         const d = (id) => document.getElementById(id).value;
         const peso = parseFloat(d('peso')) || 0;
-        const alturaM = (parseFloat(d('altura')) || 0) / 100;
+        const alturaCm = parseFloat(d('altura')) || 0;
+        const alturaM = alturaCm / 100;
         const idade = parseInt(d('idade')) || 0;
         const sexo = d('sexo');
         const prot = d('protocolo_selecionado');
+        const nome = d('nome') || "Avaliado";
+        const cidade = d('cidade') || "";
+        const estado = d('estado') || "";
+        const telefone = d('telefone') || "não informado";
+
+        if(peso === 0 || alturaCm === 0) {
+            alert('Preencha Peso e Altura corretamente!');
+            prev();
+            return;
+        }
 
         // Dobras
         const tri = parseFloat(d('d_tri')) || 0;
@@ -303,7 +381,6 @@
         const axi = parseFloat(d('d_axi')) || 0;
         const cox = parseFloat(d('d_coxa')) || 0;
         const bi = parseFloat(d('d_bi')) || 0;
-        const pant = parseFloat(d('d_pant')) || 0;
 
         let fat = 0, dens = 0;
 
@@ -313,45 +390,4 @@
             dens = (sexo==='M') ? 1.112-0.00043499*s7+0.00000055*s7**2-0.00028826*idade : 1.097-0.00046971*s7+0.00000056*s7**2-0.00012828*idade;
             fat = ((4.95/dens)-4.5)*100;
         } else if(prot === 'pollock3') {
-            const s3 = (sexo==='M') ? pei+abd+cox : tri+sup+cox;
-            dens = (sexo==='M') ? 1.10938-0.0008267*s3+0.0000016*s3**2-0.0002574*idade : 1.0994921-0.0009929*s3+0.0000023*s3**2-0.0001392*idade;
-            fat = ((4.95/dens)-4.5)*100;
-        } else if(prot === 'deurenberg') {
-            fat = (1.20*(peso/alturaM**2))+(0.23*idade)-(sexo==='M'?16.2:5.4);
-        } else if(prot === 'durnin') {
-            const s4 = tri+bi+sub+sup;
-            dens = (sexo==='M') ? 1.1631-0.0632*Math.log10(s4) : 1.1599-0.0717*Math.log10(s4);
-            fat = ((4.95/dens)-4.5)*100;
-        } else {
-            fat = (1.20*(peso/alturaM**2))+(0.23*idade)-(sexo==='M'?16.2:5.4); // Fallback
-        }
-
-        // Massas Drinkwater/Matiegka
-        const mGorda = peso * (fat/100);
-        const mOssea = Math.pow(alturaM, 2) * (parseFloat(d('dia_pulso'))/100 || 0.06) * (parseFloat(d('dia_femur'))/100 || 0.09) * 400 * 0.06;
-        const mRes = peso * (sexo==='M'?0.241:0.209);
-        const mMusc = peso - (mGorda + mOssea + mRes);
-
-        // Somatotipo
-        const endo = -0.7182 + (0.1451*(tri+sub+sup)) - (0.00068*Math.pow(tri+sub+sup, 2));
-        const meso = (0.858*parseFloat(d('dia_umero')||6)) + (0.601*parseFloat(d('dia_femur')||9)) - (0.131*alturaM*100) + 4.5;
-        const ecto = (alturaM*100/Math.pow(peso,1/3))*0.732 - 28.58;
-
-        document.getElementById('db_fat').innerText = fat.toFixed(1) + "%";
-        document.getElementById('db_mus').innerText = mMusc.toFixed(1) + "kg";
-        document.getElementById('db_oss').innerText = mOssea.toFixed(1) + "kg";
-        document.getElementById('db_ind').innerText = (peso/alturaM**2).toFixed(1) + " / " + (parseFloat(d('c_cintura'))/parseFloat(d('c_quadril'))||0).toFixed(2);
-
-        renderDashboard(mMusc, mGorda, mOssea, endo, meso, ecto);
-        next();
-    }
-
-    function renderDashboard(mu, go, os, e, m, ec) {
-        if(chartBar) chartBar.destroy(); if(chartRadar) chartRadar.destroy();
-        chartBar = new Chart(document.getElementById('c_bar_tela'), { type:'bar', data:{labels:['Musc','Gord','Oss'], datasets:[{data:[mu,go,os], backgroundColor:['#7c3aed','#ef4444','#f59e0b']}]}, options:{responsive:true, plugins:{legend:{display:false}}}});
-        chartRadar = new Chart(document.getElementById('c_rad_tela'), { type:'radar', data:{labels:['Endo','Meso','Ecto'], datasets:[{data:[e,m,ec], backgroundColor:'rgba(124,58,237,0.3)', borderColor:'#7c3aed'}]}, options:{responsive:true}});
-    }
-</script>
-</body>
-                 </html>
-                 
+            const s3 = (sexo==='M') ? pei+abd+cox : tri+sup+c
